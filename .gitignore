@@ -19,6 +19,7 @@ lib
 lib64
 # C extensions
 *.so
+app/migrations/*
 
 # Distribution / packaging
 .Python
