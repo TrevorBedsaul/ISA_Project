@@ -1,0 +1,14 @@
+{
+"title": "{{book.title}}",
+"ISBN": "{{book.ISBN}}",
+"author": "{{book.author}}",
+"price": "{{book.price}}",
+"year": "{{book.year}}",
+"class_id": "{{book.class_id}}",
+"edition": "{{book.edition}}",
+"status": "{{book.status}}",
+"type_name": "{{book.type_name}}",
+"condition": "{{book.condition}}",
+"buyer": "{{book.buyer.id}}",
+"seller": "{{book.seller.id}}",
+}

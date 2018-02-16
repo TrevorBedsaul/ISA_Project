@@ -1,0 +1,4 @@
+{
+"message": "Book created successfully!",
+"book_id": {{book_id}},
+}
