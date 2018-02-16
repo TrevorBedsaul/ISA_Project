@@ -1,4 +1,6 @@
 from django.db import models
+from django.core import serializers
+
 
 # Create your models here.
 
@@ -8,17 +10,26 @@ class GenericUser(models.Model):
     email = models.EmailField()
     password = models.CharField(max_length=50)
     username = models.CharField(max_length=50)
+    def convert_to_json(self):
+        return serializers.serialize('json', self)
+
 
 class Buyer(models.Model):
     generic_user = models.ForeignKey(GenericUser)
     address = models.CharField(max_length=200)
     rating = models.FloatField()
     activity_score = models.FloatField()
+    def convert_to_json(self):
+        return serializers.serialize('json', self)
+
 
 class Seller(models.Model):
     generic_user = models.ForeignKey(GenericUser)
     rating = models.FloatField()
     activity_score = models.FloatField()
+    def convert_to_json(self):
+        return serializers.serialize('json', self)
+
 
 class Book(models.Model):
     title = models.CharField(max_length=300)
@@ -51,7 +62,7 @@ class Book(models.Model):
         (PAPERBACK, "Paperback"),
         (LOOSE_LEAF, "Loose leaf"),
     )
-    type = models.CharField(
+    type_name = models.CharField(
         max_length=2,
         choices=TYPE_CHOICES,
         default=HARDCOVER
@@ -73,3 +84,6 @@ class Book(models.Model):
 
     seller = models.ForeignKey(Seller)
     buyer = models.ForeignKey(Buyer, null=True)
+    def convert_to_json(self):
+        return serializers.serialize('json', self)
+
