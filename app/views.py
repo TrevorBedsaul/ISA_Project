@@ -29,8 +29,11 @@ def update_book(request, book_id):
         for key, value in request.POST.items():
             setattr(book_object, key, value)
         book_object.save()
+        book_object = Book.objects.get(id=book_id)
     except ObjectDoesNotExist:
         return HttpResponseNotFound(json.dumps({"Error":"Book not found"}))
+    except:
+        return HttpResponseNotFound(json.dumps({"Error":"Saving book failed"}))
 
     return HttpResponse(json.dumps(model_to_dict(book_object)), status=200)
 
