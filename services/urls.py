@@ -24,3 +24,7 @@ urlpatterns = [
     url(r'^api/v1/books/(?P<book_id>\d+)/update$', views.update_book, name='update_book'),
 
 ]
+
+urlpatterns += [
+    url(r'^api/v1/sellers/(?P<seller_id>\d+)$', views.get_seller, name='get_seller'),
+]

@@ -69,3 +69,19 @@ def create_book(request):
         HttpResponse(status=500)
 
     return HttpResponse(json.dumps(model_to_dict(book_object)), status=200)
+
+def get_seller(request, seller_id):
+    if request.method != "GET":
+        return HttpResponse(status=405)
+    try:
+        seller_object = Seller.objects.get(id=seller_id)
+        generic_user = seller_object.generic_user
+    except ObjectDoesNotExist:
+        return HttpResponseNotFound(json.dumps({"Error":"Seller not found"}))
+    generic_user_dict = model_to_dict(generic_user)
+    del generic_user_dict["password"]
+    seller_dict = model_to_dict(seller_object)
+    seller_dict["generic_user"] = generic_user_dict
+    seller_json = json.dumps(seller_dict)
+    return HttpResponse(seller_json, status=200)
+
