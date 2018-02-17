@@ -20,13 +20,20 @@ def get_book(request, book_id):
         return HttpResponseNotFound(json.dumps({"Error":"Book not found"}))
     return HttpResponse(json.dumps(model_to_dict(book_object)), status=200)
 
+@csrf_exempt
 def update_book(request, book_id):
     if request.method != "POST":
         return HttpResponse(status=405)
     try:
         book_object = Book.objects.get(id=book_id)
+        for key, value in request.POST.items():
+            setattr(book_object, key, value)
+        book_object.save()
+        book_object = Book.objects.get(id=book_id)
     except ObjectDoesNotExist:
         return HttpResponseNotFound(json.dumps({"Error":"Book not found"}))
+    except:
+        return HttpResponseNotFound(json.dumps({"Error":"Saving book failed"}))
 
     return HttpResponse(json.dumps(model_to_dict(book_object)), status=200)
 
