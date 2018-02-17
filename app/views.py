@@ -23,7 +23,7 @@ def get_book(request, book_id):
 @csrf_exempt
 def create_book(request):
     if request.method != "POST":
-        return render(request, "error.txt", {})
+        return HttpResponse(status=405)
     try:
         title = request.POST.get("title")
         ISBN = request.POST.get("ISBN")
@@ -36,17 +36,18 @@ def create_book(request):
         condition = request.POST.get("condition")
         seller_id = request.POST.get("seller")
     except:
-        return render(request, "error.txt", {})
+        HttpResponse(status=400)
 
     try:
         seller_object = Seller.objects.get(id=seller_id)
     except ObjectDoesNotExist:
-        return render(request, "error.txt", {})
+        return HttpResponseNotFound('<h1>Seller not found</h1>')
 
     try:
         book_object = Book(title=title, ISBN=ISBN, author=author, price=price, year=year, class_id=class_id,
                            edition=edition, type_name=type_name, condition=condition, seller=seller_object)
         book_object.save()
     except:
-        return render(request, "error.txt", {})
-    return render(request, "create_book_template.txt", {"book_id": book_object.id})
+        HttpResponse(status=500)
+
+    return HttpResponse(json.dumps(model_to_dict(book_object)), status=200)
