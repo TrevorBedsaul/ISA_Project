@@ -1,7 +1,6 @@
 from django.db import models
 from django.core import serializers
 
-
 # Create your models here.
 
 class GenericUser(models.Model):
@@ -84,6 +83,3 @@ class Book(models.Model):
 
     seller = models.ForeignKey(Seller)
     buyer = models.ForeignKey(Buyer, null=True)
-    def convert_to_json(self):
-        return serializers.serialize('json', self)
-
