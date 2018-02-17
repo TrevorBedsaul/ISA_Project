@@ -2,6 +2,9 @@ from django.shortcuts import render
 from .models import Book, Buyer, Seller, GenericUser
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_exempt
+from django.forms.models import model_to_dict
+from django.http import HttpResponse, HttpResponseNotFound
+import json
 
 # Create your views here.
 
@@ -10,12 +13,12 @@ def test(request):
 
 def get_book(request, book_id):
     if request.method != "GET":
-        return render(request, "error.txt", {})
+        return HttpResponse(status=405)
     try:
         book_object = Book.objects.get(id=book_id)
     except ObjectDoesNotExist:
-        return render(request, "error.txt", {})
-    return render(request, "get_book_template.txt", {"book": book_object})
+        return HttpResponseNotFound('<h1>Book not found</h1>')
+    return HttpResponse(json.dumps(model_to_dict(book_object)), status=200)
 
 @csrf_exempt
 def create_book(request):
