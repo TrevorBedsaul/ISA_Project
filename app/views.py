@@ -17,7 +17,7 @@ def get_book(request, book_id):
     try:
         book_object = Book.objects.get(id=book_id)
     except ObjectDoesNotExist:
-        return HttpResponseNotFound('<h1>Book not found</h1>')
+        return HttpResponseNotFound(json.dumps({"Error":"Book not found"}))
     return HttpResponse(json.dumps(model_to_dict(book_object)), status=200)
 
 @csrf_exempt
@@ -41,7 +41,7 @@ def create_book(request):
     try:
         seller_object = Seller.objects.get(id=seller_id)
     except ObjectDoesNotExist:
-        return HttpResponseNotFound('<h1>Seller not found</h1>')
+        return HttpResponseNotFound(json.dumps({"Error":"Seller not found"}))
 
     try:
         book_object = Book(title=title, ISBN=ISBN, author=author, price=price, year=year, class_id=class_id,
