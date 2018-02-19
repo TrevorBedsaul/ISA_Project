@@ -27,6 +27,7 @@ urlpatterns = [
 urlpatterns += [
     url(r'^api/v1/sellers/(?P<seller_id>\d+)$', views.get_seller, name='get_seller'),
     url(r'^api/v1/sellers/(?P<seller_id>\d+)/update$', views.update_seller, name='update_seller'),
+    url(r'^api/v1/sellers/create$', views.create_seller, name='create_seller'),
 ]
 
 urlpatterns += [

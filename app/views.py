@@ -162,3 +162,33 @@ def get_buyer(request, buyer_id):
     seller_dict["generic_user"] = generic_user_dict
     seller_json = json.dumps(seller_dict)
     return HttpResponse(seller_json, status=200)
+
+@csrf_exempt
+def create_seller(request):
+    if request.method != "POST":
+        return HttpResponse(status=405)
+
+    try:
+        if "generic_user" in request.POST.keys():
+            generic_user_id = int(request.POST.get("generic_user"))
+            generic_user = GenericUser.objects.get(id=generic_user_id)
+        else:
+            name = request.POST.get("name")
+            phone = request.POST.get("phone")
+            email = request.POST.get("email")
+            password = request.POST.get("password")
+            username = request.POST.get("username")
+            generic_user = GenericUser(name=name, phone=phone, email=email, password=password, username=username)
+            generic_user.save()
+    except ObjectDoesNotExist:
+        return HttpResponseNotFound(json.dumps({"Error":"GenericUser not found"}))
+    except:
+        return HttpResponse(status=400)
+
+    try:
+        seller_object = Seller(generic_user=generic_user, rating=0, activity_score=0)
+        seller_object.save()
+    except:
+        return HttpResponse(status=500)
+
+    return HttpResponse(json.dumps(model_to_dict(seller_object)), status=201)
