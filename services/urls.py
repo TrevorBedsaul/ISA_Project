@@ -33,4 +33,5 @@ urlpatterns += [
 urlpatterns += [
     url(r'^api/v1/buyers/(?P<buyer_id>\d+)$', views.get_buyer, name='get_buyer'),
     url(r'^api/v1/buyers/(?P<buyer_id>\d+)/update$', views.update_buyer, name='update_buyer'),
+    url(r'^api/v1/buyers/create$', views.create_buyer, name='create_buyer'),
 ]
