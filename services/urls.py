@@ -19,26 +19,22 @@ from app import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-<<<<<<< HEAD
-    url(r'^test/', views.test),
-    url(r'^get_book/(?P<book_id>\d+)/$', views.get_book, name='get_book'),
-    url(r'^create_book/$', views.create_book, name='create_book'),
-    url(r'^delete_book/(?P<book_id>\d+)/$', views.delete_book, name='delete_book')
-=======
     url(r'^api/v1/books/(?P<book_id>\d+)$', views.get_book, name='get_book'),
     url(r'^api/v1/books/create$', views.create_book, name='create_book'),
     url(r'^api/v1/books/(?P<book_id>\d+)/update$', views.update_book, name='update_book'),
+    url(r'^api/v1/books/(?P<book_id>\d+)/delete', views.delete_book, name='delete_book'),
 ]
 
 urlpatterns += [
     url(r'^api/v1/sellers/(?P<seller_id>\d+)$', views.get_seller, name='get_seller'),
     url(r'^api/v1/sellers/(?P<seller_id>\d+)/update$', views.update_seller, name='update_seller'),
     url(r'^api/v1/sellers/create$', views.create_seller, name='create_seller'),
+    url(r'^api/v1/sellers/(?P<seller_id>\d+)/delete', views.delete_seller, name='delete_seller'),
 ]
 
 urlpatterns += [
     url(r'^api/v1/buyers/(?P<buyer_id>\d+)$', views.get_buyer, name='get_buyer'),
     url(r'^api/v1/buyers/(?P<buyer_id>\d+)/update$', views.update_buyer, name='update_buyer'),
     url(r'^api/v1/buyers/create$', views.create_buyer, name='create_buyer'),
->>>>>>> 81e523a9276e401713af3990b95e9aa469addaa4
+    url(r'^api/v1/buyers/(?P<buyer_id>\d+)/delete', views.delete_buyer, name='delete_buyer'),
 ]
