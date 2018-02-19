@@ -51,3 +51,16 @@ def create_book(request):
         HttpResponse(status=500)
 
     return HttpResponse(json.dumps(model_to_dict(book_object)), status=200)
+
+def delete_book(request, book_id):
+    if request.method != "GET":
+        return HttpResponse(status=405)
+    try:
+        book_object = Book.objects.get(id=book_id)
+    except ObjectDoesNotExist:
+        return HttpResponseNotFound('<h1>Book not found</h1>')
+    try:
+        book_object.delete()
+    except:
+        HttpResponse(status=500)
+    return HttpResponse(json.dumps(model_to_dict(book_object)), status=200)

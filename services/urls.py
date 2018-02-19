@@ -22,4 +22,5 @@ urlpatterns = [
     url(r'^test/', views.test),
     url(r'^get_book/(?P<book_id>\d+)/$', views.get_book, name='get_book'),
     url(r'^create_book/$', views.create_book, name='create_book'),
+    url(r'^delete_book/(?P<book_id>\d+)/$', views.delete_book, name='delete_book')
 ]
