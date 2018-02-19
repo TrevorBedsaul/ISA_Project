@@ -121,6 +121,8 @@ def update_seller(request, seller_id):
     try:
         seller_object = Seller.objects.get(id=seller_id)
         generic_user = seller_object.generic_user
+        generic_user_id = int(seller_object.generic_user.id)
+        generic_user = GenericUser.objects.get(id=generic_user_id)
 
         for key, value in request.POST.items():
             if hasattr(seller_object, key):
@@ -130,6 +132,7 @@ def update_seller(request, seller_id):
 
 
         seller_object.generic_user =  generic_user
+        generic_user.save()
         seller_object.save()
         seller_object = Seller.objects.get(id=seller_id)
     except ObjectDoesNotExist:
@@ -153,6 +156,8 @@ def update_buyer(request, buyer_id):
     try:
         buyer_object = Buyer.objects.get(id=buyer_id)
         generic_user = buyer_object.generic_user
+        generic_user_id = int(buyer_object.generic_user.id)
+        generic_user = GenericUser.objects.get(id=generic_user_id)
 
         for key, value in request.POST.items():
             if hasattr(buyer_object, key):
@@ -162,6 +167,7 @@ def update_buyer(request, buyer_id):
 
 
         buyer_object.generic_user =  generic_user
+        generic_user.save()
         buyer_object.save()
         buyer_object = Buyer.objects.get(id=buyer_id)
     except ObjectDoesNotExist:
