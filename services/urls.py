@@ -30,3 +30,8 @@ urlpatterns += [
     url(r'^api/v1/sellers/(?P<seller_id>\d+)/update$', views.update_seller, name='update_seller'),
 
 ]
+
+urlpatterns += [
+    url(r'^api/v1/buyers/(?P<buyer_id>\d+)/update$', views.update_buyer, name='update_buyer'),
+
+]

@@ -115,3 +115,35 @@ def update_seller(request, seller_id):
     seller_json = json.dumps(seller_dict)
 
     return HttpResponse(seller_json, status=200)
+
+
+@csrf_exempt
+def update_buyer(request, buyer_id):
+    if request.method != "POST":
+        return HttpResponse(status=405)
+    try:
+        buyer_object = Buyer.objects.get(id=buyer_id)
+        generic_user = buyer_object.generic_user
+
+        for key, value in request.POST.items():
+            if hasattr(buyer_object, key):
+                setattr(buyer_object, key, value)
+            else:
+                setattr(generic_user, key, value)
+
+
+        buyer_object.generic_user =  generic_user
+        buyer_object.save()
+        buyer_object = Buyer.objects.get(id=buyer_id)
+    except ObjectDoesNotExist:
+        return HttpResponseNotFound(json.dumps({"Error":"Buyer not found"}))
+    except:
+        return HttpResponseNotFound(json.dumps({"Error":"Saving Buyer failed"}))
+
+    generic_user_dict = model_to_dict(generic_user)
+    del generic_user_dict["password"]
+    buyer_dict = model_to_dict(buyer_object)
+    buyer_dict["generic_user"] = generic_user_dict
+    buyer_json = json.dumps(buyer_dict)
+
+    return HttpResponse(buyer_json, status=200)
