@@ -54,7 +54,7 @@ def create_book(request):
         condition = request.POST.get("condition")
         seller_id = request.POST.get("seller")
     except:
-        HttpResponse(status=400)
+        return HttpResponse(status=400)
 
     try:
         seller_object = Seller.objects.get(id=seller_id)
@@ -66,7 +66,7 @@ def create_book(request):
                            edition=edition, type_name=type_name, condition=condition, seller=seller_object)
         book_object.save()
     except:
-        HttpResponse(status=500)
+        return HttpResponse(status=500)
 
     return HttpResponse(json.dumps(model_to_dict(book_object)), status=200)
 
