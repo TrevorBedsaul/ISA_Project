@@ -22,16 +22,14 @@ urlpatterns = [
     url(r'^api/v1/books/(?P<book_id>\d+)$', views.get_book, name='get_book'),
     url(r'^api/v1/books/create$', views.create_book, name='create_book'),
     url(r'^api/v1/books/(?P<book_id>\d+)/update$', views.update_book, name='update_book'),
-
 ]
 
 urlpatterns += [
     url(r'^api/v1/sellers/(?P<seller_id>\d+)$', views.get_seller, name='get_seller'),
     url(r'^api/v1/sellers/(?P<seller_id>\d+)/update$', views.update_seller, name='update_seller'),
-
 ]
 
 urlpatterns += [
+    url(r'^api/v1/buyers/(?P<buyer_id>\d+)$', views.get_buyer, name='get_buyer'),
     url(r'^api/v1/buyers/(?P<buyer_id>\d+)/update$', views.update_buyer, name='update_buyer'),
-
 ]

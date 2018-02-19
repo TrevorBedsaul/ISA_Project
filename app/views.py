@@ -147,3 +147,18 @@ def update_buyer(request, buyer_id):
     buyer_json = json.dumps(buyer_dict)
 
     return HttpResponse(buyer_json, status=200)
+
+def get_buyer(request, buyer_id):
+    if request.method != "GET":
+        return HttpResponse(status=405)
+    try:
+        buyer_object = Buyer.objects.get(id=buyer_id)
+        generic_user = buyer_object.generic_user
+    except ObjectDoesNotExist:
+        return HttpResponseNotFound(json.dumps({"Error":"Seller not found"}))
+    generic_user_dict = model_to_dict(generic_user)
+    del generic_user_dict["password"]
+    seller_dict = model_to_dict(buyer_object)
+    seller_dict["generic_user"] = generic_user_dict
+    seller_json = json.dumps(seller_dict)
+    return HttpResponse(seller_json, status=200)
