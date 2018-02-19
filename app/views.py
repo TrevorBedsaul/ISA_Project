@@ -8,9 +8,6 @@ import json
 
 # Create your views here.
 
-def test(request):
-    return render(request, "test_template.html", {})
-
 def get_book(request, book_id):
     if request.method != "GET":
         return HttpResponse(status=405)
@@ -190,7 +187,7 @@ def get_buyer(request, buyer_id):
         buyer_object = Buyer.objects.get(id=buyer_id)
         generic_user = buyer_object.generic_user
     except ObjectDoesNotExist:
-        return HttpResponseNotFound(json.dumps({"Error":"Seller not found"}))
+        return HttpResponseNotFound(json.dumps({"Error":"Buyer not found"}))
     generic_user_dict = model_to_dict(generic_user)
     del generic_user_dict["password"]
     seller_dict = model_to_dict(buyer_object)
@@ -268,7 +265,7 @@ def delete_buyer(request, buyer_id):
         buyer_object.generic_user = generic_user
         buyer_object.delete()
     except ObjectDoesNotExist:
-        return HttpResponseNotFound(json.dumps({"Error":"Seller not found"}))
+        return HttpResponseNotFound(json.dumps({"Error":"Buyer not found"}))
     except:
-        return HttpResponseNotFound(json.dumps({"Error":"Deleting Seller failed"}))
+        return HttpResponseNotFound(json.dumps({"Error":"Deleting Buyer failed"}))
     return HttpResponse(json.dumps(model_to_dict(buyer_object)), status=200)
