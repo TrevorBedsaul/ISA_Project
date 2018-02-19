@@ -70,20 +70,35 @@ def create_book(request):
 
     return HttpResponse(json.dumps(model_to_dict(book_object)), status=200)
 
-<<<<<<< HEAD
+
 def delete_book(request, book_id):
     if request.method != "GET":
         return HttpResponse(status=405)
     try:
         book_object = Book.objects.get(id=book_id)
     except ObjectDoesNotExist:
-        return HttpResponseNotFound('<h1>Book not found</h1>')
+        return HttpResponseNotFound(json.dumps({"Error":"Book not found"}))
     try:
         book_object.delete()
     except:
         HttpResponse(status=500)
     return HttpResponse(json.dumps(model_to_dict(book_object)), status=200)
-=======
+
+
+def delete_seller(request, seller_id):
+    if request.method != "GET":
+        return HttpResponse(status=405)
+    try:
+        seller_object = Seller.objects.get(id=seller_id)
+        generic_user = seller_object.generic_user
+        seller_object.generic_user = generic_user
+        seller_object.delete()
+    except ObjectDoesNotExist:
+        return HttpResponseNotFound(json.dumps({"Error":"Seller not found"}))
+    except:
+        return HttpResponseNotFound(json.dumps({"Error":"Deleting Seller failed"}))
+    return HttpResponse(json.dumps(model_to_dict(seller_object)), status=200)
+
 def get_seller(request, seller_id):
     if request.method != "GET":
         return HttpResponse(status=405)
@@ -237,4 +252,17 @@ def create_buyer(request):
         return HttpResponse(status=500)
 
     return HttpResponse(json.dumps(model_to_dict(buyer_object)), status=201)
->>>>>>> 81e523a9276e401713af3990b95e9aa469addaa4
+
+def delete_buyer(request, buyer_id):
+    if request.method != "GET":
+        return HttpResponse(status=405)
+    try:
+        buyer_object = Buyer.objects.get(id=buyer_id)
+        generic_user = buyer_object.generic_user
+        buyer_object.generic_user = generic_user
+        buyer_object.delete()
+    except ObjectDoesNotExist:
+        return HttpResponseNotFound(json.dumps({"Error":"Seller not found"}))
+    except:
+        return HttpResponseNotFound(json.dumps({"Error":"Deleting Seller failed"}))
+    return HttpResponse(json.dumps(model_to_dict(buyer_object)), status=200)
