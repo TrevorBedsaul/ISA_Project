@@ -17,4 +17,14 @@ exp:
    volumes:
       - ./experience:/app
    command: "mod_wsgi-express start-server --reload-on-changes /app/experience/wsgi.py"
-   
+
+web:
+   image: tp33/django
+   links:
+      - exp:exp-api
+   ports:
+      - "8000:8000"
+   volumes:
+      - ./web_layer:/app
+   command: "mod_wsgi-express start-server --reload-on-changes /app/web_layer/wsgi.py"
+
