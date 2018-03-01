@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from .models import Book, Buyer, Seller, GenericUser
 from django.core.exceptions import ObjectDoesNotExist
-from django.views.decorators.csrf import csrf_exempt
 from django.forms.models import model_to_dict
 from django.http import HttpResponse, HttpResponseNotFound
 import json
@@ -17,7 +16,6 @@ def get_book(request, book_id):
         return HttpResponseNotFound(json.dumps({"Error":"Book not found"}))
     return HttpResponse(json.dumps(model_to_dict(book_object)), status=200)
 
-@csrf_exempt
 def update_book(request, book_id):
     if request.method != "POST":
         return HttpResponse(status=405)
@@ -35,7 +33,6 @@ def update_book(request, book_id):
     return HttpResponse(json.dumps(model_to_dict(book_object)), status=200)
 
 
-@csrf_exempt
 def create_book(request):
     if request.method != "POST":
         return HttpResponse(status=405)
@@ -111,7 +108,6 @@ def get_seller(request, seller_id):
     seller_json = json.dumps(seller_dict)
     return HttpResponse(seller_json, status=200)
 
-@csrf_exempt
 def update_seller(request, seller_id):
     if request.method != "POST":
         return HttpResponse(status=405)
@@ -146,7 +142,6 @@ def update_seller(request, seller_id):
     return HttpResponse(seller_json, status=200)
 
 
-@csrf_exempt
 def update_buyer(request, buyer_id):
     if request.method != "POST":
         return HttpResponse(status=405)
@@ -195,7 +190,6 @@ def get_buyer(request, buyer_id):
     seller_json = json.dumps(seller_dict)
     return HttpResponse(seller_json, status=200)
 
-@csrf_exempt
 def create_seller(request):
     if request.method != "POST":
         return HttpResponse(status=405)
@@ -225,7 +219,6 @@ def create_seller(request):
 
     return HttpResponse(json.dumps(model_to_dict(seller_object)), status=201)
 
-@csrf_exempt
 def create_buyer(request):
     if request.method != "POST":
         return HttpResponse(status=405)
