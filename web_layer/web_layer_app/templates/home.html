@@ -4,6 +4,6 @@
 
 {% block content %}
 {% for book in book_list %}
-    <p>{{ book.title }}</p>
+    <a href="{% url 'book_detail' book_id=book.id %}">{{ book.title }}</a><br>
 {% endfor %}
 {% endblock %}
