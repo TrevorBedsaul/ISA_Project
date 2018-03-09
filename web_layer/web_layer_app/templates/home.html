@@ -3,5 +3,7 @@
 {% block title %}Homepage{% endblock %}
 
 {% block content %}
-<p>This is the homepage</p>
+{% for book in book_list %}
+    <p>{{ book.title }}</p>
+{% endfor %}
 {% endblock %}
