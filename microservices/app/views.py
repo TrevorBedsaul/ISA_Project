@@ -16,6 +16,19 @@ def get_book(request, book_id):
         return HttpResponse(json.dumps({"error":"Book not found"}), status=404)
     return HttpResponse(json.dumps(model_to_dict(book_object)), status=200)
 
+def get_all_books(request):
+    if request.method != "GET":
+        return HttpResponse(json.dumps({"error":"incorrect method (use GET instead)"}), status=405)
+    try:
+        book_objects = Book.objects.all()
+    except Exception as e:
+        return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
+    book_list = []
+    for book in book_objects:
+        book_list.append(model_to_dict(book))
+    return HttpResponse(json.dumps(book_list), status=200)
+
+
 def update_book(request, book_id):
     if request.method != "POST":
         return HttpResponse(json.dumps({"error":"incorrect method (use POST instead)"}), status=405)
