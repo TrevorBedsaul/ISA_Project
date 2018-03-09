@@ -14,4 +14,5 @@
     <p>Type: {{ book.type_name }}</p>
     <p>Condition: {{ book.condition }}</p>
     <p>Seller: {{ book.seller.name }}</p>
+    <p>Buyer: {% if book.buyer == None %}None{% else %}{{ book.buyer.name }}{% endif %}</p>
 {% endblock %}
