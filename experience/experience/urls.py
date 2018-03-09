@@ -15,7 +15,8 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from experience_app import views
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+    url(r'^api/v1/books/(?P<book_id>\d+)$', views.book_detail, name='book_detail'),
 ]
