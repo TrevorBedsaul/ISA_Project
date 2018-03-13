@@ -48,7 +48,7 @@ class TestSellers(TestCase):
         updateResponse = c.post("/api/v1/sellers/2/update", {"email": "newemail@yahoo.com"})
         self.assertAlmostEquals(updateResponse.status_code, 200)
 
-        deleteResponseValid = c.get("api/v1/sellers/2/delete")
+        deleteResponseValid = c.get("/api/v1/sellers/2/delete")
         self.assertAlmostEquals(deleteResponseValid.status_code, 200)
 
 
