@@ -1,5 +1,5 @@
 from django.test import TestCase, Client
-from app.models import Book, Buyer, Seller, GenericUser
+from .models import Book, Buyer, Seller, GenericUser
 from django.core.urlresolvers import reverse
 
 
@@ -14,12 +14,95 @@ class TestBuyers(TestCase):
         self.assertAlmostEquals(response.status_code, 201)
 
     def testRead(self):
+        c = Client()
+        response = c.get("api/v1/buyers/(?P<buyer_id>\d+)", kwargs={'buyer_id':1})
+        self.AssertAlmostEquals(response.status_code, 201)
+        response2 = c.get("api/v1/buyers/(?P<buyer_id>\d+)", kwargs={'buyer_id':3})
+        self.assertAlmostEquals(response2.status_code, 404)
+        
+    def testUpdate(self):
+        c = Client()
+        response = c.post("api/v1/buyers/(?P<buyer_id>\d+)/update", {"email": "newemail@yahoo.com"}, kwargs={'buyer_id':1})
+        self.AssertAlmostEquals(response.status_code, 201)
+
+    def testDelete(self):
+        c = Client()
+        response = c.post("api/v1/buyers/(?P<buyer_id>\d+)/delete", kwargs={'buyer_id':1})
+        self.AssertAlmostEquals(response.status_code, 405)
+        response2 = c.get("api/v1/buyers/(?P<buyer_id>\d+)/delete", kwargs={'buyer_id':1})
+        self.AssertAlmostEquals(response2.status_code, 201)
+
+    def tearDown(self):
         pass
 
-        
-    # def testUpdate(self):
 
-    # def testDelete(self):
+class TestSellers(TestCase):
 
-    # def tearDown(self):
-        # pass
+    def setUp(self):
+        pass
+
+    def testCreateSeller(self):
+        c = Client()
+        response = c.post("/api/v1/sellers/create",
+                          {"name": "Sarah Jane", "phone": "987654321", "email": "sjane@gmail.com", "password": "pass",
+                           "username": "SJane", "rating": 7.5, "activity_score": 8.0})
+        self.assertAlmostEquals(response.status_code, 201)
+
+    def testReadSeller(self):
+        c = Client()
+        response = c.get("api/v1/sellers/(?P<seller_id>\d+)", kwargs={'seller_id': 1})
+        self.AssertAlmostEquals(response.status_code, 201)
+        response2 = c.get("api/v1/sellers/(?P<seller_id>\d+)", kwargs={'seller_id': 3})
+        self.assertAlmostEquals(response2.status_code, 404)
+
+    def testUpdateSeller(self):
+        c = Client()
+        response = c.post("api/v1/sellers/(?P<seller_id>\d+)/update", {"email": "newemail@yahoo.com"},
+                          kwargs={'seller_id': 1})
+        self.AssertAlmostEquals(response.status_code, 201)
+
+    def testDeleteSeller(self):
+        c = Client()
+        response = c.post("api/v1/sellers/(?P<seller_id>\d+)/delete", kwargs={'seller_id': 1})
+        self.AssertAlmostEquals(response.status_code, 405)
+        response2 = c.get("api/v1/sellers/(?P<seller_id>\d+)/delete", kwargs={'seller_id': 1})
+        self.AssertAlmostEquals(response2.status_code, 201)
+
+    def tearDown(self):
+        pass
+
+
+class TestBooks(TestCase):
+
+    def setUp(self):
+        pass
+
+    def testCreateBook(self):
+        c = Client()
+        response = c.post("/api/v1/books/create",
+                          {"title": "Intro to Politics", "ISBN": "343459789", "author": "David Wallace", "price": 95.0,
+                           "year": "2014", "class": "POLI 1010"})
+        self.assertAlmostEquals(response.status_code, 201)
+
+    def testReadBook(self):
+        c = Client()
+        response = c.get("api/v1/books/(?P<book_id>\d+)", kwargs={'book_id': 1})
+        self.AssertAlmostEquals(response.status_code, 201)
+        response2 = c.get("api/v1/books/(?P<book_id>\d+)", kwargs={'book_id': 3})
+        self.assertAlmostEquals(response2.status_code, 404)
+
+    def testUpdateBook(self):
+        c = Client()
+        response = c.post("api/v1/books/(?P<book_id>\d+)/update", {"price": 85.0}, kwargs={'book_id': 1})
+        self.AssertAlmostEquals(response.status_code, 201)
+
+    def testDeleteBook(self):
+        c = Client()
+        response = c.post("api/v1/books/(?P<book_id>\d+)/delete", kwargs={'book_id': 1})
+        self.AssertAlmostEquals(response.status_code, 405)
+        response2 = c.get("api/v1/books/(?P<book_id>\d+)/delete", kwargs={'book_id': 1})
+        self.AssertAlmostEquals(response2.status_code, 201)
+
+    def tearDown(self):
+        pass
+
