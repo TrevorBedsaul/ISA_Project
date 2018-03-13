@@ -36,20 +36,21 @@ class TestSellers(TestCase):
 
     def testSeller(self):
         c = Client()
-        createResponse = c.post("/api/v1/sellers/create", {"name": "John Doe", "phone": "123456789", "email": "hello@gmail.com", "password": "pwd", "username": "JDoe", "address": "Earth", "rating": 9.0, "activity_score": 5.0})
+        createResponse = c.post("/api/v1/sellers/create", {"name": "John Doe", "phone": "123456789", "email": "hello@gmail.com", "password": "pwd", "username": "JDoe"})
         self.assertAlmostEquals(createResponse.status_code, 201)
 
-        getResponseValid = c.get("/api/v1/sellers/1")
+        getResponseValid = c.get("/api/v1/sellers/2")
         self.assertAlmostEquals(getResponseValid.status_code, 200)
 
         getResponseInValid = c.get("/api/v1/sellers/3")
         self.assertAlmostEquals(getResponseInValid.status_code, 404)
-        updateResponse = c.post("/api/v1/sellers/1/update", {"email": "newemail@yahoo.com"})
+
+        updateResponse = c.post("/api/v1/sellers/2/update", {"email": "newemail@yahoo.com"})
         self.assertAlmostEquals(updateResponse.status_code, 200)
-        deleteResponseValid = c.get("api/v1/sellers/1/delete")
+
+        deleteResponseValid = c.get("api/v1/sellers/2/delete")
         self.assertAlmostEquals(deleteResponseValid.status_code, 200)
-        deleteResponseInValid = c.post("api/v1/sellers/1/delete")
-        self.assertAlmostEquals(deleteResponseInValid.status_code, 405)
+
 
     def tearDown(self):
         pass
