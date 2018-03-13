@@ -79,9 +79,12 @@ class TestBooks(TestCase):
 
     def testCreateBook(self):
         c = Client()
+        response = c.post("/api/v1/sellers/create",
+                          {"name": "Sarah Jane", "phone": "987654321", "email": "sjane@gmail.com", "password": "pass",
+                           "username": "SJane", "rating": 7.5, "activity_score": 8.0})
         response = c.post("/api/v1/books/create",
                           {"title": "Intro to Politics", "ISBN": "343459789", "author": "David Wallace", "price": 95.0,
-                           "year": "2014", "class": "POLI 1010"})
+                           "year": "2014", "class_id": "POLI 1010", "edition":1,"type":"HC","condition":"NW","seller":"1"})
         self.assertAlmostEquals(response.status_code, 201)
 
     def testReadBook(self):

@@ -67,7 +67,7 @@ def create_book(request):
     try:
         seller_object = Seller.objects.get(id=seller_id)
     except ObjectDoesNotExist:
-        return HttpResponse(json.dumps({"error": "Seller not found"}), status=404)
+        return HttpResponse(json.dumps({"error": "Seller not found"}), status=500)
 
     try:
         book_object = Book(title=title, ISBN=ISBN, author=author, price=price, year=year, class_id=class_id,
@@ -76,7 +76,7 @@ def create_book(request):
     except Exception as e:
         return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
 
-    return HttpResponse(json.dumps(model_to_dict(book_object)), status=200)
+    return HttpResponse(json.dumps(model_to_dict(book_object)), status=201)
 
 
 def delete_book(request, book_id):
