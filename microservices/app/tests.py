@@ -1,5 +1,4 @@
 from django.test import TestCase, Client
-from .models import Book, Buyer, Seller, GenericUser
 from django.core.urlresolvers import reverse
 
 

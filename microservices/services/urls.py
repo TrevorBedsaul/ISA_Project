@@ -27,15 +27,8 @@ urlpatterns = [
 ]
 
 urlpatterns += [
-    url(r'^api/v1/sellers/(?P<seller_id>\d+)$', views.get_seller, name='get_seller'),
-    url(r'^api/v1/sellers/(?P<seller_id>\d+)/update$', views.update_seller, name='update_seller'),
-    url(r'^api/v1/sellers/create$', views.create_seller, name='create_seller'),
-    url(r'^api/v1/sellers/(?P<seller_id>\d+)/delete', views.delete_seller, name='delete_seller'),
-]
-
-urlpatterns += [
-    url(r'^api/v1/buyers/(?P<buyer_id>\d+)$', views.get_buyer, name='get_buyer'),
-    url(r'^api/v1/buyers/(?P<buyer_id>\d+)/update$', views.update_buyer, name='update_buyer'),
-    url(r'^api/v1/buyers/create$', views.create_buyer, name='create_buyer'),
-    url(r'^api/v1/buyers/(?P<buyer_id>\d+)/delete', views.delete_buyer, name='delete_buyer'),
+    url(r'^api/v1/users/(?P<user_id>\d+)$', views.get_user, name='get_user'),
+    url(r'^api/v1/users/(?P<user_id>\d+)/update$', views.update_user, name='update_user'),
+    url(r'^api/v1/users/create$', views.create_user, name='create_user'),
+    url(r'^api/v1/users/(?P<user_id>\d+)/delete', views.delete_user, name='delete_user'),
 ]

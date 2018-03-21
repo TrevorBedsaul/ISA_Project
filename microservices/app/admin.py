@@ -1,8 +1,6 @@
 from django.contrib import admin
-from .models import Book, Buyer, Seller, GenericUser
+from .models import Book, SiteUser
 
 # Register your models here.
 admin.site.register(Book)
-admin.site.register(Buyer)
-admin.site.register(Seller)
-admin.site.register(GenericUser)
+admin.site.register(SiteUser)

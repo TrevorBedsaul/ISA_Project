@@ -1,5 +1,4 @@
-from django.shortcuts import render
-from .models import Book, Buyer, Seller, GenericUser
+from .models import Book, SiteUser
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms.models import model_to_dict
 from django.http import HttpResponse
@@ -65,7 +64,7 @@ def create_book(request):
         return HttpResponse(json.dumps({"error": "Key not found: " + e.args[0]}), status=400)
 
     try:
-        seller_object = Seller.objects.get(id=seller_id)
+        seller_object = SiteUser.objects.get(id=seller_id)
     except ObjectDoesNotExist:
         return HttpResponse(json.dumps({"error": "Seller not found"}), status=500)
 
@@ -92,189 +91,66 @@ def delete_book(request, book_id):
         HttpResponse(json.dumps({"error": str(type(e))}), status=500)
     return HttpResponse(json.dumps(model_to_dict(book_object)), status=200)
 
-
-def delete_seller(request, seller_id):
+def get_user(request, user_id):
     if request.method != "GET":
         return HttpResponse(json.dumps({"error":"incorrect method (use GET instead)"}), status=405)
     try:
-        seller_object = Seller.objects.get(id=seller_id)
-        generic_user = seller_object.generic_user
-        seller_object.generic_user = generic_user
-        seller_object.delete()
+        user_object = SiteUser.objects.get(id=user_id)
     except ObjectDoesNotExist:
-        return HttpResponse(json.dumps({"error": "Seller not found"}), status=404)
-    except Exception as e:
-        return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
-    return HttpResponse(json.dumps(model_to_dict(seller_object)), status=200)
+        return HttpResponse(json.dumps({"error":"User not found"}), status=404)
+    user_json = json.dumps(model_to_dict(user_object))
+    return HttpResponse(user_json, status=200)
 
-def get_seller(request, seller_id):
-    if request.method != "GET":
-        return HttpResponse(json.dumps({"error":"incorrect method (use GET instead)"}), status=405)
-    try:
-        seller_object = Seller.objects.get(id=seller_id)
-        generic_user = seller_object.generic_user
-    except ObjectDoesNotExist:
-        return HttpResponse(json.dumps({"error":"Seller not found"}), status=404)
-    generic_user_dict = model_to_dict(generic_user)
-    del generic_user_dict["password"]
-    seller_dict = model_to_dict(seller_object)
-    seller_dict["generic_user"] = generic_user_dict
-    seller_json = json.dumps(seller_dict)
-    return HttpResponse(seller_json, status=200)
-
-def update_seller(request, seller_id):
+def update_user(request, user_id):
     if request.method != "POST":
         return HttpResponse(json.dumps({"error":"incorrect method (use POST instead)"}), status=405)
     try:
-        seller_object = Seller.objects.get(id=seller_id)
-        generic_user_id = int(seller_object.generic_user.id)
-        generic_user = GenericUser.objects.get(id=generic_user_id)
-
+        user_object = SiteUser.objects.get(id=user_id)
         for key, value in request.POST.items():
-            if hasattr(seller_object, key):
-                setattr(seller_object, key, value)
-            else:
-                setattr(generic_user, key, value)
+            if hasattr(user_object, key):
+                setattr(user_object, key, value)
 
-
-        seller_object.generic_user =  generic_user
-        generic_user.save()
-        seller_object.save()
-        seller_object = Seller.objects.get(id=seller_id)
+        user_object.save()
     except ObjectDoesNotExist:
-        return HttpResponse(json.dumps({"error":"Seller not found"}), status=404)
+        return HttpResponse(json.dumps({"error":"User not found"}), status=404)
     except Exception as e:
         return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
 
-    generic_user_dict = model_to_dict(generic_user)
-    del generic_user_dict["password"]
-    seller_dict = model_to_dict(seller_object)
-    seller_dict["generic_user"] = generic_user_dict
-    seller_json = json.dumps(seller_dict)
-
-    return HttpResponse(seller_json, status=200)
+    user_json = json.dumps(model_to_dict(user_object))
+    return HttpResponse(user_json, status=200)
 
 
-def update_buyer(request, buyer_id):
-    if request.method != "POST":
-        return HttpResponse(json.dumps({"error":"incorrect method (use POST instead)"}), status=405)
-    try:
-        buyer_object = Buyer.objects.get(id=buyer_id)
-        generic_user_id = int(buyer_object.generic_user.id)
-        generic_user = GenericUser.objects.get(id=generic_user_id)
-
-        for key, value in request.POST.items():
-            if hasattr(buyer_object, key):
-                setattr(buyer_object, key, value)
-            else:
-                setattr(generic_user, key, value)
-
-
-        buyer_object.generic_user =  generic_user
-        generic_user.save()
-        buyer_object.save()
-        buyer_object = Buyer.objects.get(id=buyer_id)
-    except ObjectDoesNotExist:
-        return HttpResponse(json.dumps({"error":"Buyer not found"}), status=404)
-    except Exception as e:
-        return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
-
-    generic_user_dict = model_to_dict(generic_user)
-    del generic_user_dict["password"]
-    buyer_dict = model_to_dict(buyer_object)
-    buyer_dict["generic_user"] = generic_user_dict
-    buyer_json = json.dumps(buyer_dict)
-
-    return HttpResponse(buyer_json, status=200)
-
-def get_buyer(request, buyer_id):
-    if request.method != "GET":
-        return HttpResponse(json.dumps({"error":"incorrect method (use GET instead)"}), status=405)
-    try:
-        buyer_object = Buyer.objects.get(id=buyer_id)
-        generic_user = buyer_object.generic_user
-    except ObjectDoesNotExist:
-        return HttpResponse(json.dumps({"Error":"Buyer not found"}), status=404)
-    generic_user_dict = model_to_dict(generic_user)
-    del generic_user_dict["password"]
-    seller_dict = model_to_dict(buyer_object)
-    seller_dict["generic_user"] = generic_user_dict
-    seller_json = json.dumps(seller_dict)
-    return HttpResponse(seller_json, status=200)
-
-def create_seller(request):
+def create_user(request):
     if request.method != "POST":
         return HttpResponse(json.dumps({"error":"incorrect method (use POST instead)"}), status=405)
 
     try:
-        if "generic_user" in request.POST.keys():
-            generic_user_id = int(request.POST.get("generic_user"))
-            generic_user = GenericUser.objects.get(id=generic_user_id)
-        else:
-            name = request.POST["name"]
-            phone = request.POST["phone"]
-            email = request.POST["email"]
-            password = request.POST["password"]
-            username = request.POST["username"]
-            generic_user = GenericUser(name=name, phone=phone, email=email, password=password, username=username)
-            generic_user.save()
-    except ObjectDoesNotExist:
-        return HttpResponse(json.dumps({"error":"GenericUser not found"}), status=404)
+        name = request.POST["name"]
+        phone = request.POST["phone"]
+        email = request.POST["email"]
+        password = request.POST["password"]
+        username = request.POST["username"]
+        address = request.POST.get("address") or None
+        user_object = SiteUser(name=name, phone=phone, email=email, password=password, username=username,
+                               address=address, buyer_rating=0, seller_rating=0, buyer_activity_score=0,
+                               seller_activity_score=0)
+        user_object.save()
     except KeyError as e:
         return HttpResponse(json.dumps({"error": "Key not found: " + e.args[0]}), status=400)
     except Exception as e:
         return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
 
-    try:
-        seller_object = Seller(generic_user=generic_user, rating=0, activity_score=0)
-        seller_object.save()
-    except Exception as e:
-        return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
+    return HttpResponse(json.dumps(model_to_dict(user_object)), status=201)
 
-    return HttpResponse(json.dumps(model_to_dict(seller_object)), status=201)
-
-def create_buyer(request):
-    if request.method != "POST":
-        return HttpResponse(json.dumps({"error":"incorrect method (use POST instead)"}), status=405)
-
-    try:
-        address = request.POST["address"]
-        if "generic_user" in request.POST.keys():
-            generic_user_id = int(request.POST.get("generic_user"))
-            generic_user = GenericUser.objects.get(id=generic_user_id)
-        else:
-            name = request.POST.get("name")
-            phone = request.POST.get("phone")
-            email = request.POST.get("email")
-            password = request.POST.get("password")
-            username = request.POST.get("username")
-            generic_user = GenericUser(name=name, phone=phone, email=email, password=password, username=username)
-            generic_user.save()
-    except ObjectDoesNotExist:
-        return HttpResponse(json.dumps({"error":"GenericUser not found"}), status=404)
-    except KeyError as e:
-        return HttpResponse(json.dumps({"error": "Key not found: " + e.args[0]}), status=400)
-    except Exception as e:
-        return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
-
-    try:
-        buyer_object = Buyer(generic_user=generic_user, rating=0, activity_score=0, address=address)
-        buyer_object.save()
-    except Exception as e:
-        return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
-
-    return HttpResponse(json.dumps(model_to_dict(buyer_object)), status=201)
-
-def delete_buyer(request, buyer_id):
+def delete_user(request, user_id):
     if request.method != "GET":
         return HttpResponse(json.dumps({"error":"incorrect method (use GET instead)"}), status=405)
     try:
-        buyer_object = Buyer.objects.get(id=buyer_id)
-        generic_user = buyer_object.generic_user
-        buyer_object.generic_user = generic_user
-        buyer_object.delete()
+        user_object = SiteUser.objects.get(id=user_id)
+        user_object.delete()
     except ObjectDoesNotExist:
-        return HttpResponse(json.dumps({"error":"Buyer not found"}), status=404)
+        return HttpResponse(json.dumps({"error": "User not found"}), status=404)
     except Exception as e:
         return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
-    return HttpResponse(json.dumps(model_to_dict(buyer_object)), status=200)
+    return HttpResponse(json.dumps(model_to_dict(user_object)), status=200)
+

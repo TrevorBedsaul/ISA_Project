@@ -2,28 +2,17 @@ from django.db import models
 
 # Create your models here.
 
-class GenericUser(models.Model):
+class SiteUser(models.Model):
     name = models.CharField(max_length=100)
     phone = models.CharField(max_length=20)
     email = models.EmailField()
     password = models.CharField(max_length=50)
     username = models.CharField(max_length=50)
-
-
-
-class Buyer(models.Model):
-    generic_user = models.ForeignKey(GenericUser)
-    address = models.CharField(max_length=200)
-    rating = models.FloatField()
-    activity_score = models.FloatField()
-
-
-
-class Seller(models.Model):
-    generic_user = models.ForeignKey(GenericUser)
-    rating = models.FloatField()
-    activity_score = models.FloatField()
-
+    address = models.CharField(max_length=200, null=True)
+    buyer_rating = models.FloatField()
+    buyer_activity_score = models.FloatField()
+    seller_rating = models.FloatField()
+    seller_activity_score = models.FloatField()
 
 
 class Book(models.Model):
@@ -77,5 +66,5 @@ class Book(models.Model):
         default=NEW
     )
 
-    seller = models.ForeignKey(Seller)
-    buyer = models.ForeignKey(Buyer, null=True)
+    seller = models.ForeignKey(SiteUser, related_name='seller')
+    buyer = models.ForeignKey(SiteUser, related_name='buyer', null=True)
