@@ -30,11 +30,11 @@ def book_detail(request, book_id):
     book = json.loads(book_json)
     seller_id = book['seller']
     has_buyer = (book['buyer'] != None)
-    seller_req = urllib.request.Request('http://models-api:8000/api/v1/sellers/' + str(seller_id))
+    seller_req = urllib.request.Request('http://models-api:8000/api/v1/users/' + str(seller_id))
     try:
         seller_json = urllib.request.urlopen(seller_req).read().decode('utf-8')
         if has_buyer:
-            buyer_req = urllib.request.Request('http://models-api:8000/api/v1/buyers/' + str(book['buyer']))
+            buyer_req = urllib.request.Request('http://models-api:8000/api/v1/users/' + str(book['buyer']))
             buyer_json = urllib.request.urlopen(buyer_req).read().decode('utf-8')
     except HTTPError as e:
         return HttpResponse(json.dumps({"error": e.msg}), status=e.code)
@@ -42,8 +42,8 @@ def book_detail(request, book_id):
         return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
 
     seller = json.loads(seller_json)
-    book['seller'] = {'id':seller['id'], 'name':seller['generic_user']['name']}
+    book['seller'] = {'id':seller['id'], 'name':seller['name']}
     if has_buyer:
         buyer = json.loads(buyer_json)
-        book['buyer'] = {'id': buyer['id'], 'name': buyer['generic_user']['name']}
+        book['buyer'] = {'id': buyer['id'], 'name': buyer['name']}
     return HttpResponse(json.dumps(book), status=200)
