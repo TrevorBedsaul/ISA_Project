@@ -72,12 +72,12 @@ def login(request):
         return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
     return HttpResponse(resp_json, status=200)
 
-def auth(request):
+def check_authenticator(request):
     if request.method != "POST":
         return HttpResponse(json.dumps({"error":"incorrect method (use POST instead)"}), status=405)
 
     try:
-        auth = request.POST["auth"]
+        auth = request.POST["authenticator"]
     except KeyError as e:
         return HttpResponse(json.dumps({"error": "Key not found: " + e.args[0]}), status=400)
     except Exception as e:
@@ -93,4 +93,4 @@ def auth(request):
         return HttpResponse(json.dumps({"error": e.msg}), status=e.code)
     except Exception as e:
         return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
-    return HttpResponse(resp_json, status=req.status_code)
+    return HttpResponse(resp_json, status=urllib.request.urlopen(req).getcode())
