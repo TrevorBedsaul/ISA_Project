@@ -21,4 +21,5 @@ urlpatterns = [
     url(r'^api/v1/home$', views.home, name='homepage'),
     url(r'^api/v1/books/(?P<book_id>\d+)$', views.book_detail, name='book_detail'),
     url(r'^api/v1/login', views.login, name='login'),
+    url(r'^api/v1/auth', views.auth, name='auth')
 ]
