@@ -16,7 +16,7 @@ class SiteUser(models.Model):
 
 class Authenticator(models.Model):
     user = models.ForeignKey(SiteUser)
-    authenticator = models.IntegerField(primary_key=True)
+    authenticator = models.CharField(primary_key=True, max_length=64)
     date_created = models.DateTimeField(auto_now_add=True)
 
 class Book(models.Model):
