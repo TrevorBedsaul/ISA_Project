@@ -1,8 +1,9 @@
 from django.shortcuts import render
 import urllib.request
 from urllib.error import HTTPError
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
+from .forms import LoginForm
 
 import json
 
@@ -32,40 +33,39 @@ def book_detail(request, book_id):
     return render(request, "book_detail.html", {"book":book})
 
 def login(request):
-    # If we received a GET request instead of a POST request
-    if request.method == 'GET':
-        # display the login form page
-        next = request.GET.get('next')
-        return render(request, "login.html")
 
-    # Creates a new instance of our login_form and gives it our POST data
-    f = login_form(request.POST)
+    if request.method == 'GET':
+        form = LoginForm()
+        context = {"form": form}
+        return render(request, "login.html", context)
+
+    f = LoginForm(request.POST)
 
     # Check if the form instance is invalid
     if not f.is_valid():
-      # Form was bad -- send them back to login page and show them an error
-      return render('login.html', ...)
+      ## TODO Form was bad -- send them back to login page and show them an error
+      context = {"form": f, "error": "Form was invalid"}
+      return render(request, 'login.html', context)
 
-    # Sanitize username and password fields
+
     username = f.cleaned_data['username']
     password = f.cleaned_data['password']
 
-    # Get next page
-    next = f.cleaned_data.get('next') or reverse('home')
+    post_data = {'username': username, 'password': password}
+    post_encoded = urllib.parse.urlencode(post_data).encode('utf-8')
+    req = urllib.request.Request('http://exp-api:8000/api/v1/login', data=post_encoded, method='POST')
 
-    # Send validated information to our experience layer
-    resp = login_exp_api(username, password)
+    try:
+        resp_json = urllib.request.urlopen(req).read().decode('utf-8')
+    except HTTPError as e:
+        ## TODO Form was bad -- send them back to login page and show them an error
+        context = {"form": f, "error": "HTTP error: " + e.msg}
+        return render(request, 'login.html', context)
+    except Exception as e:
+        return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
 
-    # Check if the experience layer said they gave us incorrect information
-    if not resp or not resp['ok']:
-      # Couldn't log them in, send them back to login page with error
-      return render('login.html', ...)
-
-    """ If we made it here, we can log them in. """
-    # Set their login cookie and redirect to back to wherever they came from
-    authenticator = resp['resp']['authenticator']
-
-    response = HttpResponseRedirect(next)
+    resp_dict = json.loads(resp_json)
+    authenticator = resp_dict['authenticator']
+    response = HttpResponseRedirect("")
     response.set_cookie("auth", authenticator)
-
     return response
