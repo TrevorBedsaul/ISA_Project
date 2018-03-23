@@ -3,7 +3,7 @@ import urllib.request
 from urllib.error import HTTPError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
-from .forms import LoginForm
+from .forms import LoginForm, BookForm
 
 import json
 
@@ -93,7 +93,13 @@ def login(request):
 
 @login_required
 def create_listing(request):
-    return render(request, "home.html", {"book_list":[]})
+    auth = user_logged_in(request)
+    if request.method == "GET":
+        form = BookForm()
+        context = {"form": form, "auth": auth}
+        return render(request, "create_listing.html", context)
+
+
 
 @login_required
 def logout(request):
