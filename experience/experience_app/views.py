@@ -47,3 +47,28 @@ def book_detail(request, book_id):
         buyer = json.loads(buyer_json)
         book['buyer'] = {'id': buyer['id'], 'name': buyer['name']}
     return HttpResponse(json.dumps(book), status=200)
+
+def login(request):
+    if request.method != "POST":
+        return HttpResponse(json.dumps({"error":"incorrect method (use POST instead)"}), status=405)
+
+    try:
+        username = request.POST["username"]
+        password = request.POST["password"]
+    except KeyError as e:
+        return HttpResponse(json.dumps({"error": "Key not found: " + e.args[0]}), status=400)
+    except Exception as e:
+        return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
+
+    post_data = {'username': username, 'password': password}
+    post_encoded = urllib.parse.urlencode(post_data).encode('utf-8')
+    req = urllib.request.Request('http://models-api:8000/api/v1/login', data=post_encoded, method='POST')
+
+    try:
+        resp_json = urllib.request.urlopen(req).read().decode('utf-8')
+    except HTTPError as e:
+        return HttpResponse(json.dumps({"error": e.msg}), status=e.code)
+    except Exception as e:
+        return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
+    return HttpResponse(resp_json, status=200)
+
