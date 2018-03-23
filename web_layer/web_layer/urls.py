@@ -21,6 +21,7 @@ urlpatterns = [
     url(r'^$', views.home, name='homepage'),
     url(r'^books/(?P<book_id>\d+)$', views.book_detail, name='book_detail'),
     url(r'^login$', views.login, name='login'),
-    url(r'^create_listing$', views.create_listing, name='create_listing'),
+    url(r'^logout$', views.logout, name='logout'),
+    url(r'^create_listing$', views.create_listing, name='create_listing')
 
 ]
