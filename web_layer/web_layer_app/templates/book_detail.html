@@ -3,6 +3,8 @@
 {% block title %}{{ book.title }}{% endblock %}
 
 {% block content %}
+<div class="container">
+  <div class="starter-template">
     <h2>{{ book.title }}</h2>
     <h3>{{ book.author }}</h3>
     <p>ISBN: {{ book.ISBN }}</p>
@@ -15,4 +17,6 @@
     <p>Condition: {{ book.condition }}</p>
     <p>Seller: {{ book.seller.name }}</p>
     <p>Buyer: {% if book.buyer == None %}None{% else %}{{ book.buyer.name }}{% endif %}</p>
+  </div>
+</div>
 {% endblock %}
