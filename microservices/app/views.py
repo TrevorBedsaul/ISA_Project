@@ -202,3 +202,18 @@ def login(request):
         return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
 
     return HttpResponse(json.dumps({"authenticator": authenticator}), status=200)
+
+def logout(request):
+    if request.method != "POST":
+        return HttpResponse(json.dumps({"error":"incorrect method (use POST instead)"}), status=405)
+    try:
+        authenticator = request.POST["authenticator"]
+        auth_object = Authenticator.objects.get(authenticator=authenticator)
+        auth_object.delete()
+    except ObjectDoesNotExist:
+        return HttpResponse(json.dumps({"error": "Not logged in"}), status=401)
+    except Exception as e:
+        return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
+    return HttpResponse(json.dumps({"success": "User logged out"}), status=200)
+
+

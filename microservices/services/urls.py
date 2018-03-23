@@ -36,4 +36,5 @@ urlpatterns += [
 urlpatterns += [
     url(r'^api/v1/login$', views.login, name='login'),
     url(r'^api/v1/check_authenticator$', views.check_authenticator, name='check_authenticator'),
+    url(r'^api/v1/logout', views.logout, name='logout'),
 ]
