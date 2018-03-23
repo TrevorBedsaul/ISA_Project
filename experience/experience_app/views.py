@@ -94,3 +94,26 @@ def check_authenticator(request):
     except Exception as e:
         return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
     return HttpResponse(resp_json, status=urllib.request.urlopen(req).getcode())
+
+def logout(request):
+    if request.method != "POST":
+        return HttpResponse(json.dumps({"error":"incorrect method (use POST instead)"}), status=405)
+
+    try:
+        auth = request.POST["authenticator"]
+    except KeyError as e:
+        return HttpResponse(json.dumps({"error": "Key not found: " + e.args[0]}), status=400)
+    except Exception as e:
+        return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
+
+    post_data = {'authenticator': auth}
+    post_encoded = urllib.parse.urlencode(post_data).encode('utf-8')
+    req = urllib.request.Request('http://models-api:8000/api/v1/logout', data=post_encoded, method='POST')
+
+    try:
+        resp_json = urllib.request.urlopen(req).read().decode('utf-8')
+    except HTTPError as e:
+        return HttpResponse(json.dumps({"error": e.msg}), status=e.code)
+    except Exception as e:
+        return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
+    return HttpResponse(resp_json, status=200)
