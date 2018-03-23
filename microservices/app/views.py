@@ -5,7 +5,7 @@ from django.http import HttpResponse
 import json
 import os
 import hmac
-import settings
+from services import settings
 
 # Create your views here.
 
@@ -158,25 +158,25 @@ def delete_user(request, user_id):
     return HttpResponse(json.dumps(model_to_dict(user_object)), status=200)
 
 def check_authenticator(request):
-    if request.method != "GET":
-        return HttpResponse(json.dumps({"error":"incorrect method (use GET instead)"}), status=405)
+    if request.method != "POST":
+        return HttpResponse(json.dumps({"error":"incorrect method (use POST instead)"}), status=405)
 
     try:
-        authenticator = request.GET["authenticator"]
+        authenticator = request.POST["authenticator"]
         auth_object = Authenticator.objects.get(authenticator=authenticator)
     except ObjectDoesNotExist:
-        return HttpResponse(json.dumps({"error": "Not logged in"}), status=200)
+        return HttpResponse(json.dumps({"error": "Not logged in"}), status=401)
     except Exception as e:
         return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
-    return HttpResponse(json.dumps({"success": "User logged in"}))
+    return HttpResponse(json.dumps({"success": "User logged in"}), status=200)
 
 def login(request):
-    if request.method != "GET":
-        return HttpResponse(json.dumps({"error":"incorrect method (use GET instead)"}), status=405)
+    if request.method != "POST":
+        return HttpResponse(json.dumps({"error":"incorrect method (use POST instead)"}), status=405)
 
     try:
-        username = request.GET["username"]
-        password = request.GET["password"]
+        username = request.POST["username"]
+        password = request.POST["password"]
         user_list = SiteUser.objects.filter(username=username, password=password)
     except KeyError as e:
         return HttpResponse(json.dumps({"error": "Key not found: " + e.args[0]}), status=400)
@@ -184,9 +184,9 @@ def login(request):
         return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
 
     if len(user_list) == 0:
-        return HttpResponse(json.dumps({"error": "Credentials invalid"}))
+        return HttpResponse(json.dumps({"error": "Credentials invalid"}), status=401)
     elif len(user_list) > 1:
-        return HttpResponse(json.dumps({"error": "More than one user has that login"}))
+        return HttpResponse(json.dumps({"error": "More than one user has that login"}), status=401)
     else:
         user_object = user_list[0]
 

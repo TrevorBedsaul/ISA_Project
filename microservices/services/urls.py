@@ -32,3 +32,8 @@ urlpatterns += [
     url(r'^api/v1/users/create$', views.create_user, name='create_user'),
     url(r'^api/v1/users/(?P<user_id>\d+)/delete', views.delete_user, name='delete_user'),
 ]
+
+urlpatterns += [
+    url(r'^api/v1/login$', views.login, name='login'),
+    url(r'^api/v1/check_authenticator$', views.check_authenticator, name='check_authenticator'),
+]
