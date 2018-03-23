@@ -9,14 +9,20 @@ import json
 def login_required(f):
     def wrap(request, *args, **kwargs):
 
-        # try authenticating the user
         auth = request.COOKIES.get('auth')
         post_data = {'authenticator': auth}
         post_encoded = urllib.parse.urlencode(post_data).encode('utf-8')
         req = urllib.request.Request('http://exp-api:8000/api/v1/check_authenticator', data=post_encoded, method='POST')
-        # authentication failed
-        if not urllib.request.urlopen(req).getcode() != "200":
-            return HttpResponseRedirect(reverse('login'), status=401)
+
+        try:
+            response = urllib.request.urlopen(req)
+        except HTTPError as e:
+            return HttpResponse(json.dumps({"error": e.msg}), status=e.code)
+        except Exception as e:
+            return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
+
+        if response.getcode() != 200:
+            return HttpResponseRedirect(reverse('login'), status=response.getcode())
         else:
             return f(request, *args, **kwargs)
     return wrap
