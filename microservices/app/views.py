@@ -1,8 +1,11 @@
-from .models import Book, SiteUser
+from .models import Book, SiteUser, Authenticator
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms.models import model_to_dict
 from django.http import HttpResponse
 import json
+import os
+import hmac
+import settings
 
 # Create your views here.
 
@@ -154,3 +157,48 @@ def delete_user(request, user_id):
         return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
     return HttpResponse(json.dumps(model_to_dict(user_object)), status=200)
 
+def check_authenticator(request):
+    if request.method != "GET":
+        return HttpResponse(json.dumps({"error":"incorrect method (use GET instead)"}), status=405)
+
+    try:
+        authenticator = request.GET["authenticator"]
+        auth_object = Authenticator.objects.get(authenticator=authenticator)
+    except ObjectDoesNotExist:
+        return HttpResponse(json.dumps({"error": "Not logged in"}), status=200)
+    except Exception as e:
+        return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
+    return HttpResponse(json.dumps({"success": "User logged in"}))
+
+def login(request):
+    if request.method != "GET":
+        return HttpResponse(json.dumps({"error":"incorrect method (use GET instead)"}), status=405)
+
+    try:
+        username = request.GET["username"]
+        password = request.GET["password"]
+        user_list = SiteUser.objects.filter(username=username, password=password)
+    except KeyError as e:
+        return HttpResponse(json.dumps({"error": "Key not found: " + e.args[0]}), status=400)
+    except Exception as e:
+        return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
+
+    if len(user_list) == 0:
+        return HttpResponse(json.dumps({"error": "Credentials invalid"}))
+    elif len(user_list) > 1:
+        return HttpResponse(json.dumps({"error": "More than one user has that login"}))
+    else:
+        user_object = user_list[0]
+
+    authenticator = hmac.new(
+        key=settings.SECRET_KEY.encode('utf-8'),
+        msg=os.urandom(32),
+        digestmod='sha256',
+    ).hexdigest()
+    try:
+        authenticator_object = Authenticator(authenticator=authenticator, user=user_object)
+        authenticator_object.save()
+    except Exception as e:
+        return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
+
+    return HttpResponse(json.dumps({"authenticator": authenticator}), status=200)
