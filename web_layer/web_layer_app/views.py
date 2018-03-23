@@ -17,14 +17,11 @@ def login_required(f):
         try:
             response = urllib.request.urlopen(req)
         except HTTPError as e:
-            return HttpResponse(json.dumps({"error": e.msg}), status=e.code)
+            return HttpResponseRedirect("login")
         except Exception as e:
             return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
 
-        if response.getcode() != 200:
-            return HttpResponseRedirect(reverse('login'), status=response.getcode())
-        else:
-            return f(request, *args, **kwargs)
+        return f(request, *args, **kwargs)
     return wrap
 
 def home(request):
@@ -85,7 +82,7 @@ def login(request):
 
     resp_dict = json.loads(resp_json)
     authenticator = resp_dict['authenticator']
-    response = HttpResponseRedirect("")
+    response = HttpResponseRedirect("/")
     response.set_cookie("auth", authenticator)
     return response
 
