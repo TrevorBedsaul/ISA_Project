@@ -14,6 +14,10 @@ class SiteUser(models.Model):
     seller_rating = models.FloatField()
     seller_activity_score = models.FloatField()
 
+class Authenticator(models.Model):
+    user = models.ForeignKey(SiteUser)
+    authenticator = models.IntegerField(primary_key=True)
+    date_created = models.DateTimeField(auto_now_add=True)
 
 class Book(models.Model):
     title = models.CharField(max_length=300)
