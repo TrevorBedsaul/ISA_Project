@@ -117,3 +117,24 @@ def logout(request):
     except Exception as e:
         return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
     return HttpResponse(resp_json, status=200)
+
+def create_listing(request):
+    if request.method == "GET":
+        return HttpResponse(json.dumps({}), status=200)
+
+    elif request.method == "POST":
+        post_data = request.POST
+        #return HttpResponse(json.dumps(post_data), status=200)
+
+        post_encoded = urllib.parse.urlencode(post_data).encode('utf-8')
+        req = urllib.request.Request('http://models-api:8000/api/v1/books/create', data=post_encoded, method='POST')
+
+        try:
+            resp_json = urllib.request.urlopen(req).read().decode('utf-8')
+        except HTTPError as e:
+            return HttpResponse(json.dumps({"error": e.msg, "response":resp_json}), status=e.code)
+        except Exception as e:
+            return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
+        return HttpResponse(resp_json, status=201)
+    else:
+        return HttpResponse(json.dumps({"error":"incorrect method (use GET or POST instead)"}), status=405)

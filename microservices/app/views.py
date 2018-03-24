@@ -60,7 +60,7 @@ def create_book(request):
         year = request.POST["year"]
         class_id = request.POST["class_id"]
         edition = request.POST["edition"]
-        type_name = request.POST["type"]
+        type_name = request.POST["type_name"]
         condition = request.POST["condition"]
         seller_id = request.POST["seller"]
     except KeyError as e:
@@ -168,7 +168,7 @@ def check_authenticator(request):
         return HttpResponse(json.dumps({"error": "Not logged in"}), status=401)
     except Exception as e:
         return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
-    return HttpResponse(json.dumps({"success": "User logged in"}), status=200)
+    return HttpResponse(json.dumps({"success": "User logged in", "user_id": auth_object.user.id}), status=200)
 
 def login(request):
     if request.method != "POST":
@@ -215,5 +215,3 @@ def logout(request):
     except Exception as e:
         return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
     return HttpResponse(json.dumps({"success": "User logged out"}), status=200)
-
-

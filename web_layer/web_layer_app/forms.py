@@ -10,7 +10,7 @@ class BookForm(forms.Form):
     author = forms.CharField(widget=forms.TextInput(attrs={"class":"form-control","placeholder":"Author",'required': 'required'}),label='')
     price = forms.DecimalField(widget=forms.TextInput(attrs={"class":"form-control","placeholder":"Price",'required': 'required'}),label='')
     year = forms.IntegerField(widget=forms.TextInput(attrs={"class":"form-control","placeholder":"Year"}),label='')
-    class_id = forms.IntegerField(widget=forms.TextInput(attrs={"class":"form-control","placeholder":"Class ID"}),label='')
+    class_id = forms.CharField(widget=forms.TextInput(attrs={"class":"form-control","placeholder":"Class ID"}),label='')
     edition = forms.IntegerField(widget=forms.TextInput(attrs={"class":"form-control","placeholder":"Edition"}),label='')
     TYPE_CHOICES = (
         ("HC", "Hardcover"),
@@ -18,13 +18,6 @@ class BookForm(forms.Form):
         ("LL", "Loose leaf"),
     )
     type_name = forms.ChoiceField(choices=TYPE_CHOICES, widget=forms.RadioSelect)
-
-    STATUS_CHOICES = (
-        ("AV", "Available"),
-        ("IT", "In Transit"),
-        ("DE", "Delivered"),
-    )
-    status = forms.ChoiceField(choices=STATUS_CHOICES, widget=forms.RadioSelect)
 
     CONDITION_CHOICES = (
         ("NW", "New"),

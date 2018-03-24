@@ -4,8 +4,9 @@ from urllib.error import HTTPError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from .forms import LoginForm, BookForm
-
+from django.views.decorators.csrf import csrf_exempt
 import json
+from django.shortcuts import redirect
 
 def user_logged_in(request):
     auth = request.COOKIES.get('auth')
@@ -19,6 +20,21 @@ def user_logged_in(request):
         return False
     return True
 
+def get_user_object(request):
+    auth = request.COOKIES.get('auth')
+    post_data = {'authenticator': auth}
+    post_encoded = urllib.parse.urlencode(post_data).encode('utf-8')
+    req = urllib.request.Request('http://exp-api:8000/api/v1/check_authenticator', data=post_encoded, method='POST')
+
+    try:
+        response = urllib.request.urlopen(req).read().decode('utf-8')
+    except Exception as e:
+        return {}
+    response_dict = json.loads(response)
+    user_dict = {}
+    user_dict['id'] = response_dict['user_id']
+    return user_dict
+
 def login_required(f):
     def wrap(request, *args, **kwargs):
         if user_logged_in(request):
@@ -30,6 +46,7 @@ def login_required(f):
 
 def home(request):
     auth = user_logged_in(request)
+
     req = urllib.request.Request('http://exp-api:8000/api/v1/home')
     try:
         resp_json = urllib.request.urlopen(req).read().decode('utf-8')
@@ -91,6 +108,7 @@ def login(request):
     response.set_cookie("auth", authenticator)
     return response
 
+@csrf_exempt
 @login_required
 def create_listing(request):
     auth = user_logged_in(request)
@@ -98,6 +116,30 @@ def create_listing(request):
         form = BookForm()
         context = {"form": form, "auth": auth}
         return render(request, "create_listing.html", context)
+    elif request.method == "POST":
+        form = BookForm(request.POST)
+        if form.is_valid():
+            book_info = form.cleaned_data
+            book_info["price"] = float(book_info["price"])
+            user_object = get_user_object(request)
+            book_info["seller"] = user_object["id"]
+
+        else:
+            blank_form = BookForm()
+            context = {"form": form, "auth": auth, "error": "The form was invalid, please enter valid data"}
+            return render(request, "create_listing.html", context)
+
+        post_encoded = urllib.parse.urlencode(book_info).encode('utf-8')
+        req = urllib.request.Request('http://exp-api:8000/api/v1/books/create', data=post_encoded, method='POST')
+        try:
+            resp_json = urllib.request.urlopen(req).read().decode('utf-8')
+        except HTTPError as e:
+            return HttpResponse(json.dumps({"error": e.msg}), status=e.code)
+        except Exception as e:
+            return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
+        resp_dict = json.loads(resp_json)
+        book_id = resp_dict["id"]
+        return redirect("book_detail", book_id=book_id)
 
 
 
