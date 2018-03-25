@@ -2,6 +2,8 @@ from .models import Book, SiteUser, Authenticator
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms.models import model_to_dict
 from django.http import HttpResponse
+from django.http import QueryDict
+from django.db.models.query import QuerySet
 import json
 import os
 import hmac
@@ -9,14 +11,15 @@ from services import settings
 
 # Create your views here.
 
-def get_book(request, book_id):
+def get_book(request):
     if request.method != "GET":
         return HttpResponse(json.dumps({"error":"incorrect method (use GET instead)"}), status=405)
     try:
-        book_object = Book.objects.get(id=book_id)
+        dict = QueryDict.request.GET.dict()
+        qSet = Book.objects.filter(dict)
     except ObjectDoesNotExist:
         return HttpResponse(json.dumps({"error":"Book not found"}), status=404)
-    return HttpResponse(json.dumps(model_to_dict(book_object)), status=200)
+    return HttpResponse(json.dumps(model_to_dict(qSet)), status=200)
 
 def get_all_books(request):
     if request.method != "GET":
