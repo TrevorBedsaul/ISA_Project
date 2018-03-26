@@ -29,7 +29,7 @@ class BookForm(forms.Form):
 class UserForm(forms.Form):
     name = forms.CharField(widget=forms.TextInput(attrs={"class":"form-control","placeholder":"Name",'autofocus': 'autofocus','required': 'required'}),label='')
     phone = forms.CharField(widget=forms.TextInput(attrs={"class":"form-control","placeholder":"Phone", 'required': 'required'}),label='')
-    email = forms.EmailField(widget=forms.TextInput(attrs={"class":"form-control","placeholder":"Email",'required': 'required'}),label='')
-    password = forms.CharField(widget=forms.TextInput(attrs={"class":"form-control","placeholder":"Password",'required': 'required'}),label='')
+    email = forms.EmailField(widget=forms.TextInput(attrs={"type":"email", "class":"form-control","placeholder":"Email",'required': 'required'}),label='')
+    password = forms.CharField(widget=forms.TextInput(attrs={"type" : "password", "class":"form-control","placeholder":"Password",'required': 'required'}),label='')
     username = forms.CharField(widget=forms.TextInput(attrs={"class":"form-control","placeholder":"Username",'required': 'required'}),label='')
     address = forms.CharField(widget=forms.TextInput(attrs={"class":"form-control","placeholder":"Address"}),label='')
