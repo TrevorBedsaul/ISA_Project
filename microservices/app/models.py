@@ -6,7 +6,7 @@ class SiteUser(models.Model):
     name = models.CharField(max_length=100)
     phone = models.CharField(max_length=20)
     email = models.EmailField()
-    password = models.CharField(max_length=50)
+    password = models.CharField(max_length=200)
     username = models.CharField(max_length=50)
     address = models.CharField(max_length=200, null=True)
     buyer_rating = models.FloatField()

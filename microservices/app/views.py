@@ -8,6 +8,7 @@ import json
 import os
 import hmac
 from services import settings
+from django.contrib.auth.hashers import make_password, check_password
 
 # Create your views here.
 
@@ -129,7 +130,7 @@ def create_user(request):
         name = request.POST["name"]
         phone = request.POST["phone"]
         email = request.POST["email"]
-        password = request.POST["password"]
+        password = make_password(request.POST["password"])
         username = request.POST["username"]
         address = request.POST.get("address") or None
         user_object = SiteUser(name=name, phone=phone, email=email, password=password, username=username,
@@ -175,7 +176,7 @@ def login(request):
     try:
         username = request.POST["username"]
         password = request.POST["password"]
-        user_list = SiteUser.objects.filter(username=username, password=password)
+        user_list = SiteUser.objects.filter(username=username)
     except KeyError as e:
         return HttpResponse(json.dumps({"error": "Key not found: " + e.args[0]}), status=400)
     except Exception as e:
@@ -187,6 +188,8 @@ def login(request):
         return HttpResponse(json.dumps({"error": "More than one user has that login"}), status=401)
     else:
         user_object = user_list[0]
+    if not check_password(password, user_object.password):
+        return HttpResponse(json.dumps({"error": "Credentials invalid"}), status=401)
 
     authenticator = hmac.new(
         key=settings.SECRET_KEY.encode('utf-8'),

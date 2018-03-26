@@ -24,4 +24,5 @@ urlpatterns = [
     url(r'^api/v1/check_authenticator', views.check_authenticator, name='check_authenticator'),
     url(r'^api/v1/logout', views.logout, name='logout'),
     url(r'^api/v1/books/create', views.create_listing, name='create_listing'),
+    url(r'^api/v1/create_user', views.create_user, name='create_user'),
 ]

@@ -164,3 +164,20 @@ def create_account(request):
         form = UserForm()
         context = {"form": form, "auth": auth}
         return render(request, "create_account.html", context)
+    elif request.method == "POST":
+        form = UserForm(request.POST)
+        if form.is_valid():
+            user_info = form.cleaned_data
+        else:
+            context = {"form": form, "auth": auth, "error": "The form was invalid, please enter valid data"}
+            return render(request, "create_account.html", context)
+
+        post_encoded = urllib.parse.urlencode(user_info).encode('utf-8')
+        req = urllib.request.Request('http://exp-api:8000/api/v1/create_user', data=post_encoded, method='POST')
+        try:
+            resp_json = urllib.request.urlopen(req).read().decode('utf-8')
+        except HTTPError as e:
+            return HttpResponse(json.dumps({"error": e.msg}), status=e.code)
+        except Exception as e:
+            return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
+        return redirect("homepage")
