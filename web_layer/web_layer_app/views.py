@@ -74,8 +74,9 @@ def book_detail(request, book_id):
 
 def login(request):
     if request.method == 'GET':
+        auth = user_logged_in(request)
         form = LoginForm()
-        context = {"form": form}
+        context = {"form": form, "auth": auth}
         return render(request, "login.html", context)
 
     f = LoginForm(request.POST)
