@@ -16,10 +16,14 @@ def get_book(request):
         return HttpResponse(json.dumps({"error":"incorrect method (use GET instead)"}), status=405)
     try:
         dict = request.GET.dict()
-        qSet = Book.objects.filter(dict)
+
+        qSet = Book.objects.filter(**dict)
     except ObjectDoesNotExist:
         return HttpResponse(json.dumps({"error":"Book not found"}), status=404)
-    return HttpResponse(json.dumps(model_to_dict(qSet)), status=200)
+    all_books = []
+    for book in qSet:
+        all_books.append(model_to_dict(book))
+    return HttpResponse(json.dumps(all_books), status=200)
 
 def get_all_books(request):
     if request.method != "GET":
