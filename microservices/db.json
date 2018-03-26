@@ -216,15 +216,42 @@
   }
 },
 {
+  "model": "auth.permission",
+  "pk": 25,
+  "fields": {
+    "name": "Can add book",
+    "content_type": 9,
+    "codename": "add_book"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 26,
+  "fields": {
+    "name": "Can change book",
+    "content_type": 9,
+    "codename": "change_book"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 27,
+  "fields": {
+    "name": "Can delete book",
+    "content_type": 9,
+    "codename": "delete_book"
+  }
+},
+{
   "model": "app.siteuser",
   "pk": 1,
   "fields": {
     "name": "Steven",
-    "phone": "203-247-3306",
+    "phone": "2345678900",
     "email": "stevendicarlo2@gmail.com",
-    "password": "Password1",
+    "password": "pbkdf2_sha256$30000$gp6Z8458xOG0$ENsZVPg1lQVf2G6nAFEMOqGtrcFmlYad9ruzjRfL5KY=",
     "username": "stevendicarlo2",
-    "address": "homeAddress",
+    "address": "some address",
     "buyer_rating": 0.0,
     "buyer_activity_score": 0.0,
     "seller_rating": 0.0,
@@ -236,9 +263,9 @@
   "pk": 2,
   "fields": {
     "name": "Danny",
-    "phone": "203-247-1345",
-    "email": "danny@gmail.com",
-    "password": "Password2",
+    "phone": "1234567890",
+    "email": "danny@email.com",
+    "password": "pbkdf2_sha256$30000$pMh96GOjFGHc$3xmqtjFRvV/y4VhpiODCeScOTXtY9JXVR42bHKXvMks=",
     "username": "danny",
     "address": "DannyAddress",
     "buyer_rating": 0.0,
