@@ -3,7 +3,7 @@ import urllib.request
 from urllib.error import HTTPError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
-from .forms import LoginForm, BookForm
+from .forms import LoginForm, BookForm, UserForm
 from django.views.decorators.csrf import csrf_exempt
 import json
 from django.shortcuts import redirect
@@ -156,3 +156,11 @@ def logout(request):
         return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
 
     return HttpResponseRedirect("/")
+
+@csrf_exempt
+def create_account(request):
+    auth = user_logged_in(request)
+    if request.method == "GET":
+        form = UserForm()
+        context = {"form": form, "auth": auth}
+        return render(request, "create_account.html", context)

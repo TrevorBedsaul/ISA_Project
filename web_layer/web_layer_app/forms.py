@@ -28,12 +28,8 @@ class BookForm(forms.Form):
 
 class UserForm(forms.Form):
     name = forms.CharField(widget=forms.TextInput(attrs={"class":"form-control","placeholder":"Name",'autofocus': 'autofocus','required': 'required'}),label='')
-    phone = forms.CharField(widget=forms.TextInput(attrs={"class":"form-control","placeholder":"Phone",'autofocus': 'autofocus','required': 'required'}),label='')
-    email = forms.EmailField(widget=forms.TextInput(attrs={"class":"form-control","placeholder":"Email",'autofocus': 'autofocus','required': 'required'}),label='')
-    password = forms.CharField(widget=forms.TextInput(attrs={"class":"form-control","placeholder":"Password",'autofocus': 'autofocus','required': 'required'}),label='')
-    username = forms.CharField(widget=forms.TextInput(attrs={"class":"form-control","placeholder":"Title",'autofocus': 'autofocus','required': 'required'}),label='')
-    address = forms.CharField(max_length=200, null=True)
-    buyer_rating = forms.FloatField(widget=forms.TextInput(attrs={"class":"form-control","placeholder":"Buyer Rating"}),label='')
-    buyer_activity_score = forms.FloatField(widget=forms.TextInput(attrs={"class":"form-control","placeholder":"Buyer Activity"}),label='')
-    seller_rating = forms.FloatField(widget=forms.TextInput(attrs={"class":"form-control","placeholder":"Seller Rating"}),label='')
-    seller_activity_score = forms.FloatField(widget=forms.TextInput(attrs={"class":"form-control","placeholder":"Seller Activity"}),label='')
+    phone = forms.CharField(widget=forms.TextInput(attrs={"class":"form-control","placeholder":"Phone", 'required': 'required'}),label='')
+    email = forms.EmailField(widget=forms.TextInput(attrs={"class":"form-control","placeholder":"Email",'required': 'required'}),label='')
+    password = forms.CharField(widget=forms.TextInput(attrs={"class":"form-control","placeholder":"Password",'required': 'required'}),label='')
+    username = forms.CharField(widget=forms.TextInput(attrs={"class":"form-control","placeholder":"Username",'required': 'required'}),label='')
+    address = forms.CharField(widget=forms.TextInput(attrs={"class":"form-control","placeholder":"Address"}),label='')
