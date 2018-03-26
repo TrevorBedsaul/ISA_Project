@@ -25,18 +25,6 @@ def get_book(request):
         all_books.append(model_to_dict(book))
     return HttpResponse(json.dumps(all_books), status=200)
 
-def get_all_books(request):
-    if request.method != "GET":
-        return HttpResponse(json.dumps({"error":"incorrect method (use GET instead)"}), status=405)
-    try:
-        book_objects = Book.objects.all()
-    except Exception as e:
-        return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
-    book_list = []
-    for book in book_objects:
-        book_list.append(model_to_dict(book))
-    return HttpResponse(json.dumps(book_list), status=200)
-
 
 def update_book(request, book_id):
     if request.method != "POST":
@@ -101,15 +89,18 @@ def delete_book(request, book_id):
         HttpResponse(json.dumps({"error": str(type(e))}), status=500)
     return HttpResponse(json.dumps(model_to_dict(book_object)), status=200)
 
-def get_user(request, user_id):
+def get_user(request):
     if request.method != "GET":
         return HttpResponse(json.dumps({"error":"incorrect method (use GET instead)"}), status=405)
     try:
-        user_object = SiteUser.objects.get(id=user_id)
+        dict = request.GET.dict()
+        qSet = SiteUser.objects.filter(**dict)
     except ObjectDoesNotExist:
         return HttpResponse(json.dumps({"error":"User not found"}), status=404)
-    user_json = json.dumps(model_to_dict(user_object))
-    return HttpResponse(user_json, status=200)
+    all_users = []
+    for user in qSet:
+        all_users.append(model_to_dict(user))
+    return HttpResponse(json.dumps(all_users), status=200)
 
 def update_user(request, user_id):
     if request.method != "POST":

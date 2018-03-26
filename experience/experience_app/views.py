@@ -7,7 +7,7 @@ from urllib.error import HTTPError
 # Create your views here.
 
 def home(request):
-    req = urllib.request.Request('http://models-api:8000/api/v1/books/all')
+    req = urllib.request.Request('http://models-api:8000/api/v1/books')
     try:
         resp_json = urllib.request.urlopen(req).read().decode('utf-8')
     except HTTPError as e:
@@ -18,7 +18,7 @@ def home(request):
 
 
 def book_detail(request, book_id):
-    book_req = urllib.request.Request('http://models-api:8000/api/v1/books/' + str(book_id))
+    book_req = urllib.request.Request('http://models-api:8000/api/v1/books?id=' + str(book_id))
 
     try:
         book_json = urllib.request.urlopen(book_req).read().decode('utf-8')
@@ -27,24 +27,34 @@ def book_detail(request, book_id):
     except Exception as e:
         return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
 
-    book = json.loads(book_json)
+    book_list = json.loads(book_json)
+    if len(book_list) != 1:
+        return HttpResponse(json.dumps({"error": "Book not found"}), status=404)
+    book = book_list[0]
     seller_id = book['seller']
     has_buyer = (book['buyer'] != None)
-    seller_req = urllib.request.Request('http://models-api:8000/api/v1/users/' + str(seller_id))
+
+    seller_req = urllib.request.Request('http://models-api:8000/api/v1/users?id=' + str(seller_id))
     try:
         seller_json = urllib.request.urlopen(seller_req).read().decode('utf-8')
         if has_buyer:
-            buyer_req = urllib.request.Request('http://models-api:8000/api/v1/users/' + str(book['buyer']))
+            buyer_req = urllib.request.Request('http://models-api:8000/api/v1/users?id=' + str(book['buyer']))
             buyer_json = urllib.request.urlopen(buyer_req).read().decode('utf-8')
     except HTTPError as e:
         return HttpResponse(json.dumps({"error": e.msg}), status=e.code)
     except Exception as e:
         return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
 
-    seller = json.loads(seller_json)
+    seller_list = json.loads(seller_json)
+    if len(seller_list) != 1:
+        return HttpResponse(json.dumps({"error": "Seller not found"}), status=404)
+    seller = seller_list[0]
     book['seller'] = {'id':seller['id'], 'name':seller['name']}
     if has_buyer:
-        buyer = json.loads(buyer_json)
+        buyer_list = json.loads(buyer_json)
+        if len(buyer_list) != 1:
+            return HttpResponse(json.dumps({"error": "Buyer not found"}), status=404)
+        buyer = buyer_list[0]
         book['buyer'] = {'id': buyer['id'], 'name': buyer['name']}
     return HttpResponse(json.dumps(book), status=200)
 
