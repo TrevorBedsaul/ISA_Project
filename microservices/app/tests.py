@@ -68,8 +68,13 @@ class TestAuthentication(TestCase):
         loginResponse = c.post("/api/v1/login", {"username": "danny", "password": "Password2",})
 
         self.assertEquals(loginResponse.status_code, 200)
+        newAuth = loginResponse["authenticator"]
 
+        authenticatorResponse = c.post("/api/v1/check_authenticator", {"authenticator": newAuth})
+        self.assertEquals(authenticatorResponse.status_code, 200)
 
+        logoutResponse = c.post("/api/v1/logout", {"authenticator": newAuth})
+        self.assertEquals(logoutResponse.status_code, 200)
 
     def tearDown(self):
         pass
