@@ -19,7 +19,7 @@ from app import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^api/v1/books/(?P<book_id>\d+)$', views.get_book, name='get_book'),
+    url(r'^api/v1/books/get$', views.get_book, name='get_book'),
     url(r'^api/v1/books/all$', views.get_all_books, name='get_all_books'),
     url(r'^api/v1/books/create$', views.create_book, name='create_book'),
     url(r'^api/v1/books/(?P<book_id>\d+)/update$', views.update_book, name='update_book'),
