@@ -15,7 +15,7 @@ def get_book(request):
     if request.method != "GET":
         return HttpResponse(json.dumps({"error":"incorrect method (use GET instead)"}), status=405)
     try:
-        dict = QueryDict.request.GET.dict()
+        dict = request.GET.dict()
         qSet = Book.objects.filter(dict)
     except ObjectDoesNotExist:
         return HttpResponse(json.dumps({"error":"Book not found"}), status=404)
