@@ -48,3 +48,6 @@ batch:
    links:
       - kafka:kafka
       - es:es
+   volumes:
+      - ./batch:/script
+   command: "python /script/script.py"
