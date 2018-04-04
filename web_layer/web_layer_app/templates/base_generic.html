@@ -13,6 +13,9 @@
       padding: 40px 15px;
       text-align: center;
     }
+    .form-inline  {
+      margin:0px 30px;
+    }
     </style>
 </head>
 <body>
@@ -33,8 +36,12 @@
         {% endif %}
       </li>
     </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
+    </form>
     {% if not auth %}
-      <a class=" nav-item" href="/login">Login <span class="sr-only">(current)</span></a>
+    <a class=" nav-item" href="/login">Login <span class="sr-only">(current)</span></a>
     {%else %}
     <a class=" nav-item" href="/logout">Logout <span class="sr-only">(current)</span></a>
     {%endif%}
