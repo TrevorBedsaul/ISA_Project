@@ -2,7 +2,8 @@ from django.http import HttpResponse
 import json
 import urllib.request
 from urllib.error import HTTPError
-
+from kafka import KafkaProducer
+from elasticsearch import Elasticsearch
 
 # Create your views here.
 
@@ -144,6 +145,10 @@ def create_listing(request):
             return HttpResponse(json.dumps({"error": e.msg}), status=e.code)
         except Exception as e:
             return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
+
+        producer = KafkaProducer(bootstrap_servers=['kafka:9092'])
+        producer.send('new-listings-topic', json.dumps(resp_json).encode('utf-8'))
+
         return HttpResponse(resp_json, status=201)
     else:
         return HttpResponse(json.dumps({"error":"incorrect method (use GET or POST instead)"}), status=405)
@@ -165,5 +170,29 @@ def create_user(request):
         except Exception as e:
             return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
         return HttpResponse(resp_json, status=201)
+    else:
+        return HttpResponse(json.dumps({"error":"incorrect method (use GET or POST instead)"}), status=405)
+
+
+def search(request):
+    if request.method == "POST":
+        return HttpResponse(json.dumps({}), status=200)
+
+    elif request.method == "GET":
+        query = request.POST.get('query', 'none')
+
+        es = Elasticsearch(['es'])
+
+        result = es.search(index='listing_index', body={'query': {'query_string': {'query': query}}, 'size': 5})
+
+        if result['timed_out'] == True:
+            return HttpResponse(json.dumps({"error":"Search timed out"}), status=500)
+
+        sources = []
+        for returned in result['hits']['hits']:
+            sources.append(returned['_source'])
+        
+        return HttpResponse(json.dumps(sources), status=201)
+
     else:
         return HttpResponse(json.dumps({"error":"incorrect method (use GET or POST instead)"}), status=405)
