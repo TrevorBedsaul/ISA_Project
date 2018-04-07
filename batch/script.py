@@ -3,11 +3,12 @@ import json
 import time
 from elasticsearch import Elasticsearch
 
-print("hello from script.py")
-time.sleep(3)
-print("done sleeping")
-
-consumer = KafkaConsumer('new-listings-topic', group_id='listing-indexer', bootstrap_servers=['kafka:9092'])
+consumer = None
+while consumer is None:
+    try:
+        consumer = KafkaConsumer('new-listings-topic', group_id='listing-indexer', bootstrap_servers=['kafka:9092'])
+    except:
+        time.sleep(1)
 es = Elasticsearch(['es'])
 
 while True:
