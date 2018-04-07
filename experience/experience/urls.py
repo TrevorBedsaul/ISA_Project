@@ -25,4 +25,5 @@ urlpatterns = [
     url(r'^api/v1/logout', views.logout, name='logout'),
     url(r'^api/v1/books/create', views.create_listing, name='create_listing'),
     url(r'^api/v1/create_user', views.create_user, name='create_user'),
+    url(r'^api/v1/search', views.search, name='search'),
 ]
