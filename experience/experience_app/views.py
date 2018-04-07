@@ -147,7 +147,7 @@ def create_listing(request):
             return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
 
         producer = KafkaProducer(bootstrap_servers=['kafka:9092'])
-        producer.send('new-listings-topic', json.dumps(resp_json).encode('utf-8'))
+        producer.send('new-listings-topic', resp_json.encode('utf-8'))
 
         return HttpResponse(resp_json, status=201)
     else:
@@ -179,7 +179,7 @@ def search(request):
         return HttpResponse(json.dumps({}), status=200)
 
     elif request.method == "GET":
-        query = request.POST.get('query', 'none')
+        query = request.GET.get('query', 'none')
 
         es = Elasticsearch(['es'])
 
