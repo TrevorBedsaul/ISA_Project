@@ -191,7 +191,7 @@ def search(request):
         sources = []
         for returned in result['hits']['hits']:
             sources.append(returned['_source'])
-        
+
         return HttpResponse(json.dumps(sources), status=201)
 
     else:

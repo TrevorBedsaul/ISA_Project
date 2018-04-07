@@ -181,3 +181,18 @@ def create_account(request):
         except Exception as e:
             return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
         return redirect("homepage")
+
+
+def search(request):
+    auth = user_logged_in(request)
+    query = request.GET.get('query')
+    req = urllib.request.Request('http://exp-api:8000/api/v1/search?query='+urllib.parse.quote(query))
+    try:
+        resp_json = urllib.request.urlopen(req).read().decode('utf-8')
+    except HTTPError as e:
+        return HttpResponse(json.dumps({"error": e.msg}), status=e.code)
+    except Exception as e:
+        return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
+
+    book_list = json.loads(resp_json)
+    return render(request, "search.html", {"book_list":book_list, "auth":auth, "results": len(book_list)})
