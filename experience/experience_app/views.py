@@ -146,8 +146,18 @@ def create_listing(request):
         except Exception as e:
             return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
 
+        resp = json.loads(resp_json)
+        book_id = resp["id"]
+        book_req = urllib.request.Request('http://models-api:8000/api/v1/books?id=' + str(book_id))
+        try:
+            full_book_json = urllib.request.urlopen(book_req).read().decode('utf-8')
+        except HTTPError as e:
+            return HttpResponse(json.dumps({"error": e.msg}), status=e.code)
+        except Exception as e:
+            return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
+
         producer = KafkaProducer(bootstrap_servers=['kafka:9092'])
-        producer.send('new-listings-topic', resp_json.encode('utf-8'))
+        producer.send('new-listings-topic', full_book_json.encode('utf-8'))
 
         return HttpResponse(resp_json, status=201)
     else:
