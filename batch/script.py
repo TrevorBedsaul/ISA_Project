@@ -13,8 +13,8 @@ while consumer is None:
         time.sleep(1)
 
 loaded_es = False
-book_from_fixture_1 = {"seller": {"name": "Steven", "id": 1}, "id": 1, "type_name": "HC", "edition": 1, "author": "Cristopher Robin", "condition": "NW", "year": "1902", "buyer": None, "price": 100.0, "status": "AV", "ISBN": "098-765-4321", "class_id": "ENGL 1020", "title": "Winnie the Pooh"}
-book_from_fixture_2 = {"buyer": None, "class_id": "ENGL 1020", "condition": "NW", "edition": 1, "type_name": "HC", "price": 100.0, "seller": {"name": "Steven", "id": 1}, "title": "book 2", "ISBN": "098-765-4321", "status": "AV", "year": "1902", "author": "Cristopher Robin", "id": 2}
+book_from_fixture_1 = {"seller": 1, "id": 1, "type_name": "HC", "edition": 1, "author": "Cristopher Robin", "condition": "NW", "year": "1902", "buyer": None, "price": 100.0, "status": "AV", "ISBN": "098-765-4321", "class_id": "ENGL 1020", "title": "Winnie the Pooh"}
+book_from_fixture_2 = {"buyer": None, "class_id": "ENGL 1020", "condition": "NW", "edition": 1, "type_name": "HC", "price": 100.0, "seller": 1, "title": "book 2", "ISBN": "098-765-4321", "status": "AV", "year": "1902", "author": "Cristopher Robin", "id": 2}
 time.sleep(10)
 while not loaded_es:
     try:
