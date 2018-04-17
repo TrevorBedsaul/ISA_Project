@@ -7,6 +7,4 @@ before_script:
 - docker-compose up -d mysql
 - docker-compose up -d
 script:
-- docker ps -a
-after_script:
-- docker images
+- docker exec -it models python manage.py test
