@@ -1,3 +1,14 @@
+mysql:
+  image: mysql:5.7.14
+  container_name: mysql
+  environment:
+    - MYSQL_ROOT_PASSWORD=$$3cureUS
+    - MYSQL_DATABASE=cs4501
+    - MYSQL_USER=www
+    - MYSQL_PASSWORD=$$3cureUS
+  expose:
+    - "3306"
+
 models:
     image: tp33/django
     external_links:
@@ -19,8 +30,6 @@ exp:
    volumes:
       - ./experience:/app
    command: "mod_wsgi-express start-server --reload-on-changes /app/experience/wsgi.py"
-
-
 
 web:
    image: tp33/django
