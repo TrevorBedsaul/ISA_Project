@@ -112,5 +112,5 @@ selenium-test:
     - selenium-chrome:selenium-chrome
     - web:web
   volumes:
-    - ./app/selenium:/app
-  command: bash -c "pip install selenium==3.6.0"
+    - ./selenium:/app
+  command: bash -c "pip install selenium==3.11.0 && python /app/selenium_tests.py && python /app/loop.py"
