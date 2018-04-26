@@ -113,4 +113,4 @@ selenium-test:
     - web:web
   volumes:
     - ./selenium:/app
-  command: bash -c "pip install selenium==3.11.0 && python /app/selenium_tests.py && python /app/loop.py"
+  command: bash -c "pip install selenium==3.11.0 && python /app/selenium_tests.py && tail -f /dev/null"
