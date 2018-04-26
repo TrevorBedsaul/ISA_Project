@@ -11,20 +11,22 @@ class TestTemplate(unittest.TestCase):
         self.driver = webdriver.Remote(
             command_executor='http://selenium-chrome:4444/wd/hub',
             desired_capabilities=DesiredCapabilities.CHROME)
-        """
-        self.driver.implicitly_wait(10)"""
+        self.driver.implicitly_wait(2)
 
     def tearDown(self):
         """Stop web driver"""
         self.driver.quit()
 
-    def test_case_1(self):
-        """Find and click top-right button"""
+    def test_book_link(self):
+        """Find and click book title button"""
         self.assertEqual(1, 1)
         try:
-            self.driver.get('https://localhost:80/')
+            self.driver.get('http://web:8000/')
             el = self.driver.find_element_by_class_name('lead')
             el.click()
+            info = self.driver.find_element_by_class_name("starter-template")
+            contains_title = "Winnie the Pooh" in info.get_attribute("innerHTML")
+            self.assertTrue(contains_title)
         except NoSuchElementException as ex:
             self.fail(ex.msg)
 
