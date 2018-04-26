@@ -50,6 +50,36 @@ class TestTemplate(unittest.TestCase):
         except NoSuchElementException as ex:
             self.fail(ex.msg)
 
+    def test_create_book(self):
+        """Create a book using web interface"""
+        try:
+            self.driver.get('http://web:8000/create_listing')
+            title = self.driver.find_element_by_id('id_title')
+            title.send_keys("The Art of Fielding")
+            ISBN = self.driver.find_element_by_id('id_ISBN')
+            ISBN.send_keys("12348765")
+            author = self.driver.find_element_by_id('id_author')
+            author.send_keys("James Brown")
+            price = self.driver.find_element_by_id('id_price')
+            price.send_keys(25.5)
+            year = self.driver.find_element_by_id('id_year')
+            year.send_keys(2008)
+            class_id = self.driver.find_element_by_id('id_class_id')
+            class_id.send_keys("ENGL 1010")
+            edition = self.driver.find_element_by_id('id_edition')
+            edition.send_keys(2)
+            type_name = self.driver.find_element_by_id('id_type_name_1')
+            type_name.click()
+            condition = self.driver.find_element_by_id('id_condition_1')
+            condition.click()
+
+            submit = self.driver.find_element_by_class_name("btn-lg")
+            submit.click()
+            self.assertEqual(self.driver.title, "The Art of Fielding")
+
+        except NoSuchElementException as ex:
+            self.fail(ex.msg)
+
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestTemplate)
