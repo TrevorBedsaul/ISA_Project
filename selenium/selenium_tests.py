@@ -53,6 +53,17 @@ class TestTemplate(unittest.TestCase):
     def test_create_book(self):
         """Create a book using web interface"""
         try:
+            self.driver.get('http://web:8000/login')
+            username = self.driver.find_element_by_id('id_username')
+            username.send_keys("stevendicarlo2")
+            password = self.driver.find_element_by_id('id_password')
+            password.send_keys("Password1")
+            submit = self.driver.find_element_by_class_name("btn-lg")
+            submit.click()
+        except NoSuchElementException as ex:
+            self.fail(ex.msg)
+
+        try:
             self.driver.get('http://web:8000/create_listing')
             title = self.driver.find_element_by_id('id_title')
             title.send_keys("The Art of Fielding")
@@ -61,13 +72,13 @@ class TestTemplate(unittest.TestCase):
             author = self.driver.find_element_by_id('id_author')
             author.send_keys("James Brown")
             price = self.driver.find_element_by_id('id_price')
-            price.send_keys(25.5)
+            price.send_keys("25.5")
             year = self.driver.find_element_by_id('id_year')
-            year.send_keys(2008)
+            year.send_keys("2008")
             class_id = self.driver.find_element_by_id('id_class_id')
             class_id.send_keys("ENGL 1010")
             edition = self.driver.find_element_by_id('id_edition')
-            edition.send_keys(2)
+            edition.send_keys("2")
             type_name = self.driver.find_element_by_id('id_type_name_1')
             type_name.click()
             condition = self.driver.find_element_by_id('id_condition_1')
@@ -84,7 +95,7 @@ class TestTemplate(unittest.TestCase):
         """Search for a book using web interface"""
         try:
             self.driver.get('http://web:8000/')
-            search = self.driver.find_element_by_class_name('form-inline my-2 my-lg-0')
+            search = self.driver.find_element_by_class_name('form-control')
             search.send_keys("Winnie")
             search.submit()
 
