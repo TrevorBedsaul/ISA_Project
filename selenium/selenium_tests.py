@@ -80,6 +80,22 @@ class TestTemplate(unittest.TestCase):
         except NoSuchElementException as ex:
             self.fail(ex.msg)
 
+    def test_search(self):
+        """Search for a book using web interface"""
+        try:
+            self.driver.get('http://web:8000/')
+            search = self.driver.find_element_by_class_name('form-inline my-2 my-lg-0')
+            search.send_keys("Winnie")
+            search.submit()
+
+            info = self.driver.find_element_by_class_name("starter-template")
+            contains_title = "Winnie the Pooh" in info.get_attribute("innerHTML")
+            self.assertTrue(contains_title)
+
+        except NoSuchElementException as ex:
+            self.fail(ex.msg)
+
+
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestTemplate)
