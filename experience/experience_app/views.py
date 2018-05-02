@@ -57,6 +57,28 @@ def book_detail(request, book_id):
             return HttpResponse(json.dumps({"error": "Buyer not found"}), status=404)
         buyer = buyer_list[0]
         book['buyer'] = {'id': buyer['id'], 'name': buyer['name']}
+
+
+    auth = request.COOKIES.get('auth')
+
+    post_data = {'authenticator': auth}
+    post_encoded = urllib.parse.urlencode(post_data).encode('utf-8')
+    auth_req = urllib.request.Request('http://localhost:8000/api/v1/check_authenticator', data=post_encoded, method='POST')
+
+    is_logged_in = True
+    try:
+        response = urllib.request.urlopen(auth_req).read().decode('utf-8')
+        response_json = json.loads(response)
+        user_id = response_json["user_id"]
+    except Exception as e:
+        is_logged_in = False
+
+    if is_logged_in:
+        pageview_info = {"user_id": user_id, "book_id": book_id}
+        producer = KafkaProducer(bootstrap_servers='kafka:9092')
+        producer.send('pageview-topic', json.dumps(pageview_info).encode('utf-8'))
+        return HttpResponse(json.dumps(pageview_info), status=200)
+
     return HttpResponse(json.dumps(book), status=200)
 
 def login(request):

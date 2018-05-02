@@ -114,3 +114,12 @@ selenium-test:
   volumes:
     - ./selenium:/app
   command: bash -c "pip install selenium==3.11.0 && sleep 10 && python /app/selenium_tests.py && tail -f /dev/null"
+
+spark_batch:
+   image: tp33/django
+   container_name: spark_batch
+   links:
+      - kafka:kafka
+   volumes:
+      - ./spark:/app
+   command: "python /app/pageview_script.py"
