@@ -77,7 +77,6 @@ def book_detail(request, book_id):
         pageview_info = {"user_id": user_id, "book_id": book_id}
         producer = KafkaProducer(bootstrap_servers='kafka:9092')
         producer.send('pageview-topic', json.dumps(pageview_info).encode('utf-8'))
-        return HttpResponse(json.dumps(pageview_info), status=200)
 
     return HttpResponse(json.dumps(book), status=200)
 

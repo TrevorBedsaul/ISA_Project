@@ -79,6 +79,7 @@ kafka:
    environment:
       ADVERTISED_HOST: kafka
       ADVERTISED_PORT: 9092
+      TOPICS: new-listings-topic, pageview-topic
    hostname: kafka
 
 es:

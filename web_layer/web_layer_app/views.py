@@ -61,7 +61,9 @@ def home(request):
 def book_detail(request, book_id):
     auth = user_logged_in(request)
 
+    auth_cookie = request.COOKIES.get('auth')
     req = urllib.request.Request('http://exp-api:8000/api/v1/books/' + str(book_id))
+    req.add_header("Cookie", "auth="+auth_cookie)
     try:
         resp_json = urllib.request.urlopen(req).read().decode('utf-8')
     except HTTPError as e:
