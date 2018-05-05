@@ -1,4 +1,5 @@
 from pyspark import SparkContext
+import MySQLdb
 
 sc = SparkContext("spark://spark-master:7077", "PopularItems")
 
@@ -14,7 +15,7 @@ print("line done")
 print("\n\n\n")
 
 # Each list is turned into a tuple of (user_id, page_id)
-pairs_tuples = pairs.map(lambda pair: (pair[0], pair[1]))
+pairs_tuples = pairs.map(lambda pair: (str(pair[0]), str(pair[1])))
 output = pairs_tuples.collect()
 print(output)
 print("pairs_tuples done")
@@ -95,11 +96,27 @@ print("related lists finished")
 print("\n\n\n")
 
 # Each list of related pages is turned into a comma-separated string: (page_1, "page_2,page_3")
-string_lists = related_lists.map(lambda pair: (pair[0], ",".join(pair[1])))
-output = string_lists.collect()
-print(output)
+string_lists = related_lists.map(lambda pair: (int(pair[0]), ",".join(pair[1])))
+all_string_lists = list(string_lists.collect())
+print(all_string_lists)
 print("string lists finished")
 print("\n\n\n")
 
 
+conn = MySQLdb.connect(host="mysql", user="www", passwd="$3cureUS", db="cs4501")
+c = conn.cursor()
+
+c.execute("SHOW TABLES;")
+tables_list = map(lambda tuple: tuple[0], c.fetchall())
+if "app_recommendations" not in tables_list:
+    c.execute("""CREATE TABLE app_recommendations (Page_id INT, Related_pages VARCHAR(100));""")
+else:
+    c.execute("""DELETE FROM app_recommendations;""")
+
+c.executemany("""INSERT INTO app_recommendations VALUES (%s, %s);""", all_string_lists)
+c.execute("""SELECT * FROM app_recommendations;""")
+print(c.fetchall())
+
+c.close()
+conn.close()
 sc.stop()

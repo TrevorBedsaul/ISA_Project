@@ -133,6 +133,8 @@ spark-master:
   environment:
     MASTER: spark://spark-master:7077
     SPARK_CONF_DIR: /conf
+  links:
+    - mysql
   expose:
     - 7001
     - 7002
@@ -163,6 +165,7 @@ spark-worker:
     SPARK_WORKER_WEBUI_PORT: 8081
   links:
     - spark-master
+    - mysql
   expose:
     - 7012
     - 7013
