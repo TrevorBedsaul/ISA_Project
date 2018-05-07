@@ -72,3 +72,7 @@ class Book(models.Model):
 
     seller = models.ForeignKey(SiteUser, related_name='seller')
     buyer = models.ForeignKey(SiteUser, related_name='buyer', null=True)
+
+class Recommendation(models.Model):
+    item_id = models.CharField(max_length=50)
+    recommended_items = models.CharField(max_length=200)

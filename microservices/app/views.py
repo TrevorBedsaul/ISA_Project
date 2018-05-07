@@ -216,3 +216,17 @@ def logout(request):
     except Exception as e:
         return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
     return HttpResponse(json.dumps({"success": "User logged out"}), status=200)
+
+def recommendation(request):
+    if request.method != "GET":
+        return HttpResponse(json.dumps({"error":"incorrect method (use GET instead)"}), status=405)
+    try:
+        dict = request.GET.dict()
+
+        qSet = Recommendation.objects.filter(**dict)
+    except ObjectDoesNotExist:
+        return HttpResponse(json.dumps({"error": "Recommendation not found"}), status=404)
+    all_reco = []
+    for reco in qSet:
+        all_reco.append(model_to_dict(reco))
+    return HttpResponse(json.dumps(all_reco), status=200)
