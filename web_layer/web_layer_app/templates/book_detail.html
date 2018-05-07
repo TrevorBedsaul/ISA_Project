@@ -17,6 +17,10 @@
     <p>Condition: {{ book.condition }}</p>
     <p>Seller: {{ book.seller.name }}</p>
     <p>Buyer: {% if book.buyer == None %}None{% else %}{{ book.buyer.name }}{% endif %}</p>
+    <h4>Related Items</h4>
+    {% for book in recs %}
+      <a class = "lead" href="{% url 'book_detail' book_id=book.id %}">{{ book.title }}</a><br>
+    {% endfor %}
   </div>
 </div>
 {% endblock %}

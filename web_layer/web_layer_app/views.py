@@ -83,7 +83,17 @@ def book_detail(request, book_id):
 
     book = json.loads(resp_json)
 
-    return render(request, "book_detail.html", {"book":book, "auth":auth})
+
+    try:
+        resp_json1 = urllib.request.urlopen(req1).read().decode('utf-8')
+    except HTTPError as e:
+        return HttpResponse(json.dumps({"error": e.msg}), status=e.code)
+    except Exception as e:
+        return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
+
+    recs = json.loads(resp_json1)
+
+    return render(request, "book_detail.html", {"book":book, "auth":auth, "recs":recs})
 
 def login(request):
     if request.method == 'GET':

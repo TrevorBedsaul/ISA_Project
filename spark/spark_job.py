@@ -105,7 +105,6 @@ print("\n\n\n")
 
 conn = MySQLdb.connect(host="mysql", user="www", passwd="$3cureUS", db="cs4501")
 c = conn.cursor()
-
 c.execute("SHOW TABLES;")
 tables_list = map(lambda tuple: tuple[0], c.fetchall())
 if "app_recommendations" not in tables_list:
@@ -114,6 +113,7 @@ else:
     c.execute("""DELETE FROM app_recommendations;""")
 
 c.executemany("""INSERT INTO app_recommendations VALUES (%s, %s);""", all_string_lists)
+c.execute("COMMIT")
 c.execute("""SELECT * FROM app_recommendations;""")
 print(c.fetchall())
 

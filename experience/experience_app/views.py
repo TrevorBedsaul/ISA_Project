@@ -219,8 +219,7 @@ def search(request):
         return HttpResponse(json.dumps({"error":"incorrect method (use GET or POST instead)"}), status=405)
 
 def get_recommendations(request, book_id):
-    book_rec = urllib.request.Request('http://models-api:8000/api/v1/books/recommendation')
-
+    book_rec = urllib.request.Request('http://models-api:8000/api/v1/books/recommendation?Page_id='+str(book_id))
     try:
         rec_json = urllib.request.urlopen(book_rec).read().decode('utf-8')
     except HTTPError as e:
@@ -229,16 +228,27 @@ def get_recommendations(request, book_id):
         return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
 
     reco_list = json.loads(rec_json)
-
+    rec_objs = []
     for book in reco_list:
-        if book['item_id'] == book_id:
-            rec_items = book['recommended_items'].split(',')
-            recs = list(map(int, rec_items))
-            list_rec = []
-            for i in recs:
-                try:#list_rec.append(urllib.request.Request.get('http://models-api:8000/api/v1/meme_item/' + str(i) + '/').json())
-                    list_rec.append(urllib.request.Request('http://models-api:8000/api/v1/books?id=' + str(i)))
-                except:
-                    return HttpResponse(json.dumps({"error": "Book not found"}), status=404)
+        rec_items = book['Related_pages'].split(',')
+        recs = list(map(int, rec_items))
+        for i in recs:
+            try:
+                book_req = urllib.request.Request('http://models-api:8000/api/v1/books?id=' + str(i))
 
-    return HttpResponse(json.dumps(list_rec), status=200)
+                try:
+                    book_json = urllib.request.urlopen(book_req).read().decode('utf-8')
+                except HTTPError as e:
+                    return HttpResponse(json.dumps({"error": e.msg}), status=e.code)
+                except Exception as e:
+                    return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
+
+                book_list = json.loads(book_json)
+                if len(book_list) != 1:
+                    return HttpResponse(json.dumps({"error": "Book not found"}), status=404)
+                book = book_list[0]
+                rec_objs.append({"id":i, "title":book['title']})
+            except:
+                return HttpResponse(json.dumps({"error": "Book not found"}), status=404)
+
+    return HttpResponse(json.dumps(rec_objs), status=200)
