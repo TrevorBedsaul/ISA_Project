@@ -59,11 +59,21 @@ def home(request):
     return render(request, "home.html", {"book_list":book_list, "auth":auth})
 
 def book_detail(request, book_id):
+
     auth = user_logged_in(request)
 
-    auth_cookie = request.COOKIES.get('auth')
+
+
     req = urllib.request.Request('http://exp-api:8000/api/v1/books/' + str(book_id))
-    req.add_header("Cookie", "auth="+auth_cookie)
+    req1 = urllib.request.Request('http://exp-api:8000/api/v1/recommend/' + str(book_id))
+
+    try:
+        auth_cookie = request.COOKIES.get('auth')
+        req.add_header("Cookie", "auth="+auth_cookie)
+        req1.add_header("Cookie", "auth="+auth_cookie)
+    except:
+        pass
+
     try:
         resp_json = urllib.request.urlopen(req).read().decode('utf-8')
     except HTTPError as e:
@@ -72,6 +82,7 @@ def book_detail(request, book_id):
         return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
 
     book = json.loads(resp_json)
+
     return render(request, "book_detail.html", {"book":book, "auth":auth})
 
 def login(request):

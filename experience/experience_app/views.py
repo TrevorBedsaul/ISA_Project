@@ -218,7 +218,7 @@ def search(request):
     else:
         return HttpResponse(json.dumps({"error":"incorrect method (use GET or POST instead)"}), status=405)
 
-def get_recommendation(request, book_id):
+def get_recommendations(request, book_id):
     book_rec = urllib.request.Request('http://models-api:8000/api/v1/books/recommendation')
 
     try:
