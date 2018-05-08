@@ -1,4 +1,4 @@
-from .models import Book, SiteUser, Authenticator
+from .models import Book, SiteUser, Authenticator, Recommendations
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms.models import model_to_dict
 from django.http import HttpResponse
@@ -216,3 +216,19 @@ def logout(request):
     except Exception as e:
         return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
     return HttpResponse(json.dumps({"success": "User logged out"}), status=200)
+
+def recommendation(request):
+    if request.method != "GET":
+        return HttpResponse(json.dumps({"error":"incorrect method (use GET instead)"}), status=405)
+    try:
+        dict = request.GET.dict()
+        qSet = Recommendations.objects.filter(**dict)
+    except ObjectDoesNotExist:
+        return HttpResponse(json.dumps({"error": "Recommendation not found"}), status=404)
+    except Exception as e:
+        print (e)
+        return HttpResponse(json.dumps({"error": str(type(e))}), status=500)
+    all_reco = []
+    for reco in qSet:
+        all_reco.append(model_to_dict(reco))
+    return HttpResponse(json.dumps(all_reco), status=200)

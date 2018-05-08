@@ -72,3 +72,7 @@ class Book(models.Model):
 
     seller = models.ForeignKey(SiteUser, related_name='seller')
     buyer = models.ForeignKey(SiteUser, related_name='buyer', null=True)
+
+class Recommendations(models.Model):
+    Page_id = models.IntegerField(primary_key=True)
+    Related_pages = models.CharField(max_length=200)

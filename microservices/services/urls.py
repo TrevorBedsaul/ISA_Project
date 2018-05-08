@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^api/v1/books/create$', views.create_book, name='create_book'),
     url(r'^api/v1/books/(?P<book_id>\d+)/update$', views.update_book, name='update_book'),
     url(r'^api/v1/books/(?P<book_id>\d+)/delete', views.delete_book, name='delete_book'),
+    url(r'^api/v1/books/recommendation', views.recommendation, name = 'recommend_book')
 ]
 
 urlpatterns += [

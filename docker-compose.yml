@@ -79,6 +79,7 @@ kafka:
    environment:
       ADVERTISED_HOST: kafka
       ADVERTISED_PORT: 9092
+      TOPICS: new-listings-topic, pageview-topic
    hostname: kafka
 
 es:
@@ -114,3 +115,65 @@ selenium-test:
   volumes:
     - ./selenium:/app
   command: bash -c "pip install selenium==3.11.0 && sleep 10 && python /app/selenium_tests.py && tail -f /dev/null"
+
+spark_batch:
+   image: tp33/django
+   container_name: spark_batch
+   links:
+      - kafka:kafka
+   volumes:
+      - ./spark:/app
+   command: "python /app/pageview_script.py"
+
+spark-master:
+  image: gettyimages/spark
+  command: bash -c "chmod +x /tmp/data/install_mysql_stuff.sh && /tmp/data/install_mysql_stuff.sh && chmod +x /tmp/data/run_job.sh && /tmp/data/run_job.sh"
+  container_name: spark-master
+  hostname: spark-master
+  environment:
+    MASTER: spark://spark-master:7077
+    SPARK_CONF_DIR: /conf
+  links:
+    - mysql:mysql
+  expose:
+    - 7001
+    - 7002
+    - 7003
+    - 7004
+    - 7005
+    - 7006
+    - 7077
+    - 6066
+  ports:
+    - 4040:4040
+    - 6066:6066
+    - 7077:7077
+    - 8080:8080
+  volumes:
+    - ./spark:/tmp/data
+
+spark-worker:
+  image: gettyimages/spark
+  command: bash -c "chmod +x /tmp/data/install_mysql_stuff.sh && /tmp/data/install_mysql_stuff.sh && bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077"
+  container_name: spark-worker
+  hostname: spark-worker
+  environment:
+    SPARK_CONF_DIR: /conf
+    SPARK_WORKER_CORES: 2
+    SPARK_WORKER_MEMORY: 512m
+    SPARK_WORKER_PORT: 8881
+    SPARK_WORKER_WEBUI_PORT: 8081
+  links:
+    - spark-master:spark-master
+    - mysql:mysql
+  expose:
+    - 7012
+    - 7013
+    - 7014
+    - 7015
+    - 7016
+    - 8881
+  ports:
+    - 8081:8081
+  volumes:
+    - ./spark:/tmp/data
