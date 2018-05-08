@@ -90,3 +90,54 @@ class TestAuthentication(TestCase):
 
     def tearDown(self):
         pass
+
+    class TestRec(TestCase):
+
+        def setUp(self):
+            pass
+
+        def testAuthentication(self):
+            c = Client()
+
+            response = c.post("/api/v1/users/create",
+                              {"name": "Sarah Jane", "phone": "987654321", "email": "sjane@gmail.com", "password": "pass",
+                               "username": "SJane",})
+
+            loginResponse = c.post("/api/v1/login", {"username": "SJane", "password": "pass",})
+
+            self.assertEquals(loginResponse.status_code, 200)
+            login_json = json.loads(loginResponse.content.decode("utf-8"))
+            newAuth = login_json["authenticator"]
+
+            authenticatorResponse = c.post("/api/v1/check_authenticator", {"authenticator": newAuth})
+            self.assertEquals(authenticatorResponse.status_code, 200)
+
+            createResponse = c.post("/api/v1/books/create",
+                              {"title": "Intro to Politics", "ISBN": "343459789", "author": "David Wallace", "price": 95.0,
+                               "year": "2014", "class_id": "POLI 1010", "edition":1,"type_name":"HC","condition":"NW","seller":int(id)})
+            self.assertEquals(createResponse.status_code, 201)
+
+            createResponse1 = c.post("/api/v1/books/create",
+                              {"title": "Intro to Politics", "ISBN": "343459789", "author": "David Wallace", "price": 95.0,
+                               "year": "2014", "class_id": "POLI 1010", "edition":1,"type_name":"HC","condition":"NW","seller":int(id)})
+            self.assertEquals(createResponse1.status_code, 201)
+
+            viewResponse = c.post("/api/v1/books/1",
+                              {"title": "Intro to Politics", "ISBN": "343459789", "author": "David Wallace", "price": 95.0,
+                               "year": "2014", "class_id": "POLI 1010", "edition":1,"type_name":"HC","condition":"NW","seller":int(id)})
+            self.assertEquals(viewResponse.status_code, 200)
+
+            viewResponse1 = c.post("/api/v1/books/2",
+                              {"title": "Intro to Politics", "ISBN": "343459789", "author": "David Wallace", "price": 95.0,
+                               "year": "2014", "class_id": "POLI 1010", "edition":1,"type_name":"HC","condition":"NW","seller":int(id)})
+            self.assertEquals(viewResponse1.status_code, 200)
+
+            recommendResponse  = c.get("/api/v1/recommendation?Page_id=1")
+            self.assertEquals(recommendResponse.status_code, 200)
+
+
+            logoutResponse = c.post("/api/v1/logout", {"authenticator": newAuth})
+            self.assertEquals(logoutResponse.status_code, 200)
+
+        def tearDown(self):
+            pass
