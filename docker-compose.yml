@@ -127,7 +127,7 @@ spark_batch:
 
 spark-master:
   image: gettyimages/spark
-  command: bash -c "chmod +x /tmp/data/install_mysql_stuff.sh && /tmp/data/install_mysql_stuff.sh && bin/spark-class org.apache.spark.deploy.master.Master -h spark-master"
+  command: bash -c "chmod +x /tmp/data/install_mysql_stuff.sh && /tmp/data/install_mysql_stuff.sh && chmod +x /tmp/data/run_job.sh && /tmp/data/run_job.sh"
   container_name: spark-master
   hostname: spark-master
   environment:
@@ -154,7 +154,7 @@ spark-master:
 
 spark-worker:
   image: gettyimages/spark
-  command: bash -c "chmod +x /tmp/data/install_mysql_stuff.sh && /tmp/data/install_mysql_stuff.sh && bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077 && chmod +x /tmp/data/run_job.sh && /tmp/data/run_job.sh"
+  command: bash -c "chmod +x /tmp/data/install_mysql_stuff.sh && /tmp/data/install_mysql_stuff.sh && bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077"
   container_name: spark-worker
   hostname: spark-worker
   environment:
